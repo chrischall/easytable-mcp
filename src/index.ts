@@ -1,37 +1,45 @@
 #!/usr/bin/env node
-import { runMcp, textResult, toolAnnotations } from '@chrischall/mcp-utils';
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { runMcp } from '@chrischall/mcp-utils';
+import { registerBridgeHealthcheckTool } from '@chrischall/mcp-utils/fetchproxy';
 import { VERSION } from './version.js';
+import { createEasyTableBridge } from './bridge-fetchproxy.js';
+import { EasyTableClient } from './client.js';
+import { registerAvailabilityTools } from './tools/availability.js';
+import { registerBookingTools } from './tools/booking.js';
 
-// Scaffold entry point. The tool surface (availability + booking, over the
-// fetchproxy browser bridge) lands in the follow-up implementation PR. This
-// keeps `main` buildable + green on published deps while the `read_dom`
-// capability it depends on works its way through the release train.
-function registerInfoTool(server: McpServer): void {
-  server.registerTool(
-    'easytable_info',
-    {
-      description:
-        'Describe this MCP: easyTable restaurant reservations via the fetchproxy browser bridge. Full tool surface is being wired up.',
-      annotations: toolAnnotations({ readOnly: true }),
-      inputSchema: {},
-    },
-    async () =>
-      textResult({
-        name: 'easytable-mcp',
-        version: VERSION,
-        status: 'scaffold — availability + booking tools land in the implementation PR',
-      }),
-  );
-}
+// Build the bridge + client before boot. The bridge connects lazily on the
+// first verb call, so the server still answers tools/list with no signed-in
+// tab — the "open a book.easytable.com tab / approve the pair code" guidance
+// surfaces on the first real request instead.
+const bridge = createEasyTableBridge(VERSION);
+const client = new EasyTableClient(bridge);
+await bridge.start();
+
+const banner =
+  `[easytable-mcp] v${VERSION} — routes every request through your signed-in ` +
+  'book.easytable.com tab via the @fetchproxy/server bridge, reusing that ' +
+  'authenticated (Cloudflare-cleared) session. Install the fetchproxy extension ' +
+  '(https://github.com/chrischall/fetchproxy) and open a booking-widget tab; the ' +
+  'first request prints a one-time pair code to approve in the extension. ' +
+  'This project was developed and is maintained by AI. Use at your own discretion.';
 
 await runMcp({
   name: 'easytable-mcp',
   version: VERSION,
-  banner:
-    `[easytable-mcp] v${VERSION} — routes every request through your signed-in ` +
-    'book.easytable.com tab via the @fetchproxy/server bridge. This project was ' +
-    'developed and is maintained by AI. Use at your own discretion.',
-  deps: {},
-  tools: [registerInfoTool],
+  banner,
+  deps: client,
+  tools: [
+    registerAvailabilityTools,
+    registerBookingTools,
+    (server) =>
+      registerBridgeHealthcheckTool({
+        server,
+        prefix: 'easytable',
+        probePath: '/robots.txt',
+        hostLabel: 'book.easytable.com',
+        transport: bridge.transport,
+        probeFn: (path) => bridge.fetch({ url: `https://book.easytable.com${path}`, method: 'GET' }).then((r) => r.body),
+      }),
+  ],
+  shutdown: { onSignal: () => bridge.close() },
 });
