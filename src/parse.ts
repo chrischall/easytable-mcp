@@ -119,10 +119,11 @@ export function parseCancelSearch(html: string): FoundBooking[] {
   const root = parse(html);
   const out: FoundBooking[] = [];
   for (const input of root.querySelectorAll('input')) {
+    // The live widget carries the booking id on `data-id`; `data-booking` is
+    // the historical attribute. Deliberately NOT falling back to `value` — a
+    // cancel button's label ("Cancel") would otherwise become a phantom id.
     const bookingId =
-      input.getAttribute('data-booking') ??
-      input.getAttribute('value') ??
-      input.getAttribute('data-id');
+      input.getAttribute('data-booking') ?? input.getAttribute('data-id');
     if (!bookingId) continue;
     const row = findAncestorWithAttr(input, 'data-mobile');
     const mobile = row?.getAttribute('data-mobile') || undefined;

@@ -79,6 +79,11 @@ describe('parseCancelSearch', () => {
     expect(found[0].bookingId).toBe('XYZ9');
     expect(found[0].mobile).toBe('+46701234567');
   });
+
+  it('does not treat a bare button value as a booking id', () => {
+    const html = '<div data-mobile="+46701234567"><input type="button" value="Cancel"></div>';
+    expect(parseCancelSearch(html)).toEqual([]);
+  });
 });
 
 describe('parseConfirmConfig / parseLcid', () => {
