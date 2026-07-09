@@ -1,0 +1,70 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/dxt/main/dist/mcpb-manifest.schema.json",
+  "manifest_version": "0.3",
+  "name": "easytable-mcp",
+  "display_name": "easyTable",
+  "version": "0.0.0",
+  "description": "easyTable restaurant reservations for Claude — check availability, look up bookings, and create, modify or cancel reservations",
+  "author": {
+    "name": "Chris Chall",
+    "email": "chris.c.hall@gmail.com",
+    "url": "https://github.com/chrischall"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chrischall/easytable-mcp"
+  },
+  "homepage": "https://github.com/chrischall/easytable-mcp",
+  "support": "https://github.com/chrischall/easytable-mcp/issues",
+  "license": "MIT",
+  "keywords": [
+    "easytable",
+    "restaurant",
+    "reservation",
+    "booking"
+  ],
+  "server": {
+    "type": "node",
+    "entry_point": "dist/bundle.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/dist/bundle.js"
+      ]
+    }
+  },
+  "tools": [
+    {
+      "name": "easytable_list_types",
+      "description": "List the bookable areas/types for a restaurant (e.g. indoor, bar)"
+    },
+    {
+      "name": "easytable_list_dates",
+      "description": "List bookable dates for a restaurant area and party size"
+    },
+    {
+      "name": "easytable_list_times",
+      "description": "List available time slots for a restaurant area, date, and party size"
+    },
+    {
+      "name": "easytable_find_bookings",
+      "description": "Look up a restaurant's existing bookings made with a given mobile number"
+    },
+    {
+      "name": "easytable_create_booking",
+      "description": "Create a restaurant booking (confirm-gated; reads the widget's Turnstile token via the bridge)"
+    },
+    {
+      "name": "easytable_modify_booking",
+      "description": "Modify an existing booking (confirm-gated)"
+    },
+    {
+      "name": "easytable_cancel_booking",
+      "description": "Cancel an existing booking (confirm-gated)"
+    },
+    {
+      "name": "easytable_healthcheck",
+      "description": "Check the fetchproxy bridge connection to book.easytable.com"
+    }
+  ]
+}

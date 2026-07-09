@@ -1,0 +1,22 @@
+{
+  "name": "easytable-mcp",
+  "displayName": "easyTable",
+  "version": "0.0.0",
+  "description": "easyTable restaurant reservations for Claude — check availability, look up bookings, and create, modify or cancel reservations",
+  "author": {
+    "name": "Chris Hall",
+    "email": "chris.c.hall@gmail.com"
+  },
+  "homepage": "https://github.com/chrischall/easytable-mcp",
+  "repository": "https://github.com/chrischall/easytable-mcp",
+  "license": "MIT",
+  "keywords": [
+    "easytable",
+    "restaurant",
+    "reservation",
+    "booking",
+    "mcp"
+  ],
+  "skills": "./SKILL.md",
+  "mcp": "./.mcp.json"
+}
