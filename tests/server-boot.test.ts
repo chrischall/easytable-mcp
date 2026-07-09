@@ -79,8 +79,10 @@ function listToolsViaStdio(entry: string, cwd: string): Promise<string[]> {
 }
 
 // Lower bound, not an exact count: the boot test must not break when tools are
-// added on other branches (a PR is CI-tested merged with main).
-const MIN_TOOLS = 7;
+// added on other branches (a PR is CI-tested merged with main). Pinned to the
+// current roster size (8) so a tool silently dropping still trips this — index.test.ts
+// owns the exact roster; additions only ever push the real count above the floor.
+const MIN_TOOLS = 8;
 
 describe('server boot (built artifacts)', () => {
   it('bundled .mcpb (dist/bundle.js) boots WITHOUT node_modules and lists tools', async () => {
