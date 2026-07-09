@@ -84,10 +84,10 @@ describe('parseCancelSearch', () => {
 describe('parseConfirmConfig / parseLcid', () => {
   it('pulls bookingToken (script var) and cancellationtime (hidden input) from confirm.asp', () => {
     const html =
-      '<div>...</div><script>var re2 = /x/; bookingToken = "{EB9351E5-D57B-F111}"; other=1;</script>' +
+      '<div>...</div><script>var re2 = /x/; bookingToken = "{AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE}"; other=1;</script>' +
       '<input type="hidden" id="cancellationtime" name="cancellationtime" value="180">';
     const cfg = parseConfirmConfig(html);
-    expect(cfg.bookingToken).toBe('{EB9351E5-D57B-F111}');
+    expect(cfg.bookingToken).toBe('{AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE}');
     expect(cfg.cancellationtime).toBe('180');
   });
 
