@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/chrischall/easytable-mcp/compare/v0.1.0...v0.2.0) (2026-07-13)
+
+
+### Features
+
+* **skill:** add easytable fpx access skill ([#9](https://github.com/chrischall/easytable-mcp/issues/9)) ([f0ed3c4](https://github.com/chrischall/easytable-mcp/commit/f0ed3c491ebc6b5908af412537144da2b717d76a))
+
+
+### Refactor
+
+* **skill:** move root SKILL.md into skills/, point plugin.json at ./skills/ ([#11](https://github.com/chrischall/easytable-mcp/issues/11)) ([ca2e1a5](https://github.com/chrischall/easytable-mcp/commit/ca2e1a5687d1e53288feaf9828944ea7033dc371))
+
 ## 0.1.0 (2026-07-09)
 
 
