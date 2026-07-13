@@ -1,5 +1,5 @@
 ---
-name: easytable-mcp
+name: easytable
 description: Use when the user wants to check restaurant availability or make, change, or cancel a table reservation at a restaurant that books through easyTable (a book.easytable.com/book/?id=<id> widget). Covers listing booking areas, dates and times, looking up existing bookings by phone, and creating/modifying/cancelling reservations.
 ---
 
