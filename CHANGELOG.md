@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/chrischall/easytable-mcp/compare/v0.2.0...v0.2.1) (2026-07-25)
+
+
+### Bug Fixes
+
+* **deps:** bump fast-uri out of the host-confusion advisories ([#15](https://github.com/chrischall/easytable-mcp/issues/15)) ([55f0549](https://github.com/chrischall/easytable-mcp/commit/55f054944d1a840c3df7c9b91ee48a789722e3aa))
+
 ## [0.2.0](https://github.com/chrischall/easytable-mcp/compare/v0.1.0...v0.2.0) (2026-07-13)
 
 
