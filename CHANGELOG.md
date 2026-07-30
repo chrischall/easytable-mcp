@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/chrischall/easytable-mcp/compare/v0.2.1...v0.2.2) (2026-07-30)
+
+
+### Bug Fixes
+
+* **deps:** bump @fetchproxy/* to 1.7.0 and @chrischall/mcp-utils to 0.14.0 ([#19](https://github.com/chrischall/easytable-mcp/issues/19)) ([a9f0383](https://github.com/chrischall/easytable-mcp/commit/a9f0383fa987c068033ba1174e6fb3751d75199d))
+
 ## [0.2.1](https://github.com/chrischall/easytable-mcp/compare/v0.2.0...v0.2.1) (2026-07-25)
 
 
