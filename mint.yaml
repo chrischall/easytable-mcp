@@ -21,7 +21,10 @@ state:
     start mints a fresh identity and re-prompts pairing in the browser; the
     API refuses bridge without it.
 egress:
-  allow:
-    # Only hosts the SERVER process actually fetches.
-    - book.easytable.com
-    - easytable.com
+  # Only hosts the SERVER process actually fetches. This server has ONE
+  # mode, the fetchproxy browser bridge: every request to book.easytable.com
+  # (and easytable.com) is dialled by the user's signed-in Chrome TAB, and the
+  # process itself only listens on the loopback concentrator port the runner's
+  # agent connects to. There is no direct/bootstrap/anonymous path — the site
+  # Cloudflare-403s any server-side request — so the process dials nothing.
+  allow: []
