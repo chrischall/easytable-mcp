@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.4](https://github.com/chrischall/easytable-mcp/compare/v0.2.3...v0.2.4) (2026-08-28)
+
+
+### Bug Fixes
+
+* **egress:** declare only the hosts the server process dials in mint.yaml ([#38](https://github.com/chrischall/easytable-mcp/issues/38)) ([28733b7](https://github.com/chrischall/easytable-mcp/commit/28733b7e647fc165940f3ec075394c79b88b6944))
+
 ## [0.2.3](https://github.com/chrischall/easytable-mcp/compare/v0.2.2...v0.2.3) (2026-08-06)
 
 
