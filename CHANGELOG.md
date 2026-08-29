@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/chrischall/easytable-mcp/compare/v0.2.4...v0.3.0) (2026-08-29)
+
+
+### Features
+
+* **deps:** take @fetchproxy/server 2.2.0 so the concentrator can bind its sandbox address ([#40](https://github.com/chrischall/easytable-mcp/issues/40)) ([8ad675a](https://github.com/chrischall/easytable-mcp/commit/8ad675a31e47c0ea89685821a21f58ae642c26f5))
+
 ## [0.2.4](https://github.com/chrischall/easytable-mcp/compare/v0.2.3...v0.2.4) (2026-08-28)
 
 
