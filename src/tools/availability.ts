@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { textResult, toolAnnotations, NonEmptyString, PositiveInt, IsoDate } from '@chrischall/mcp-utils';
+import { IsoDate, NonEmptyString, PositiveInt, minifiedResult, toolAnnotations } from '@chrischall/mcp-utils';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { EasyTableClient } from '../client.js';
 
@@ -19,7 +19,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
       annotations: toolAnnotations({ readOnly: true }),
       inputSchema: { id: IdSchema, lang: LangSchema },
     },
-    async ({ id, lang }) => textResult(await client.listTypes(id, lang)),
+    async ({ id, lang }) => minifiedResult(await client.listTypes(id, lang)),
   );
 
   server.registerTool(
@@ -31,7 +31,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
       inputSchema: { id: IdSchema, lang: LangSchema, type: TypeSchema, persons: PositiveInt },
     },
     async ({ id, lang, type, persons }) =>
-      textResult(await client.listDates(id, lang, type, persons)),
+      minifiedResult(await client.listDates(id, lang, type, persons)),
   );
 
   server.registerTool(
@@ -49,7 +49,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
       },
     },
     async ({ id, lang, type, date, persons }) =>
-      textResult(await client.listTimes(id, lang, type, date, persons)),
+      minifiedResult(await client.listTimes(id, lang, type, date, persons)),
   );
 
   server.registerTool(
@@ -64,6 +64,6 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
         mobile: NonEmptyString.describe('Mobile number the booking was made with, in E.164 (e.g. +46701234567).'),
       },
     },
-    async ({ id, lang, mobile }) => textResult(await client.findBookings(id, lang, mobile)),
+    async ({ id, lang, mobile }) => minifiedResult(await client.findBookings(id, lang, mobile)),
   );
 }
