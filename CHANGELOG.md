@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/chrischall/easytable-mcp/compare/v0.3.0...v0.4.0) (2026-09-04)
+
+
+### Features
+
+* **tools:** minify every response — no formatting whitespace on any payload ([#54](https://github.com/chrischall/easytable-mcp/issues/54)) ([1a32b6c](https://github.com/chrischall/easytable-mcp/commit/1a32b6c43220ee08eab73b4b4a6d128a94a4d438))
+
 ## [0.3.0](https://github.com/chrischall/easytable-mcp/compare/v0.2.4...v0.3.0) (2026-08-29)
 
 
