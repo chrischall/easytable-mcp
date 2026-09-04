@@ -1,12 +1,5 @@
 import { z } from 'zod';
-import {
-  textResult,
-  toolAnnotations,
-  schemaConfirm,
-  NonEmptyString,
-  PositiveInt,
-  IsoDate,
-} from '@chrischall/mcp-utils';
+import { IsoDate, NonEmptyString, PositiveInt, minifiedResult, schemaConfirm, toolAnnotations } from '@chrischall/mcp-utils';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { EasyTableClient } from '../client.js';
 import type { BookingResult } from '../jsonp.js';
@@ -54,7 +47,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
     },
     async ({ id, mobile, bookingId, confirm }) => {
       if (confirm !== true) {
-        return textResult({
+        return minifiedResult({
           dryRun: true,
           action: 'cancel_booking',
           id,
@@ -63,7 +56,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
         });
       }
       const result = await client.cancelBooking({ id, mobile, bookingId });
-      return textResult({ action: 'cancel_booking', ...summarize(result) });
+      return minifiedResult({ action: 'cancel_booking', ...summarize(result) });
     },
   );
 
@@ -94,7 +87,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
     },
     async ({ confirm, ...input }) => {
       if (confirm !== true) {
-        return textResult({
+        return minifiedResult({
           dryRun: true,
           action: 'create_booking',
           preview: input,
@@ -102,7 +95,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
         });
       }
       const result = await client.createBooking(input);
-      return textResult({ action: 'create_booking', ...summarize(result) });
+      return minifiedResult({ action: 'create_booking', ...summarize(result) });
     },
   );
 
@@ -122,7 +115,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
     },
     async ({ confirm, ...input }) => {
       if (confirm !== true) {
-        return textResult({
+        return minifiedResult({
           dryRun: true,
           action: 'modify_booking',
           preview: input,
@@ -130,7 +123,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
         });
       }
       const result = await client.modifyBooking(input);
-      return textResult({ action: 'modify_booking', ...summarize(result) });
+      return minifiedResult({ action: 'modify_booking', ...summarize(result) });
     },
   );
 }
