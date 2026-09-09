@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/chrischall/easytable-mcp/compare/v0.4.0...v0.4.1) (2026-09-09)
+
+
+### Bug Fixes
+
+* **deps:** require @fetchproxy/server ^2.7.0, the first that reads FETCHPROXY_IDENTITY_DIR ([#62](https://github.com/chrischall/easytable-mcp/issues/62)) ([0d6367f](https://github.com/chrischall/easytable-mcp/commit/0d6367f0e6f5cf640854fc6c3f4f8ad3b2938676))
+
 ## [0.4.0](https://github.com/chrischall/easytable-mcp/compare/v0.3.0...v0.4.0) (2026-09-04)
 
 
