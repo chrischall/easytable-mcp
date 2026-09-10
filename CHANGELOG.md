@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.2](https://github.com/chrischall/easytable-mcp/compare/v0.4.1...v0.4.2) (2026-09-10)
+
+
+### Bug Fixes
+
+* **deps:** @fetchproxy/server 2.10.0 and @chrischall/mcp-utils 0.26.1 ([#66](https://github.com/chrischall/easytable-mcp/issues/66)) ([4fcdc2a](https://github.com/chrischall/easytable-mcp/commit/4fcdc2afb102507b0d4c6c4969fabb98601f4d6b))
+* **deps:** Bump node-html-parser in the production-dependencies group ([#69](https://github.com/chrischall/easytable-mcp/issues/69)) ([cdd5708](https://github.com/chrischall/easytable-mcp/commit/cdd57087e96e3ce041e0885f9a0c85494b791017))
+* **deps:** declare the peer floors mcp-utils 0.26.1 requires ([#67](https://github.com/chrischall/easytable-mcp/issues/67)) ([a3e3839](https://github.com/chrischall/easytable-mcp/commit/a3e3839129c7ea844c96d3a57370579c1e02cc84))
+* **deps:** take @fetchproxy/server 2.9.1 so a pairing prompt survives ([#64](https://github.com/chrischall/easytable-mcp/issues/64)) ([ceb310b](https://github.com/chrischall/easytable-mcp/commit/ceb310bcaf1c25abb3b9bd6f61fa00fe282037dd))
+
 ## [0.4.1](https://github.com/chrischall/easytable-mcp/compare/v0.4.0...v0.4.1) (2026-09-09)
 
 
