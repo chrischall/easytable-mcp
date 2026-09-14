@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.3](https://github.com/chrischall/easytable-mcp/compare/v0.4.2...v0.4.3) (2026-09-14)
+
+
+### Bug Fixes
+
+* **deps:** @fetchproxy/server 2.11.3, so the hosted extension pin persists ([#70](https://github.com/chrischall/easytable-mcp/issues/70)) ([b153e26](https://github.com/chrischall/easytable-mcp/commit/b153e26424d85f313fd7ae4fabc46a23d66f872b))
+* **deps:** @fetchproxy/server 3.0.0 — protocol v4 (forward secrecy, AAD over the frame) ([#72](https://github.com/chrischall/easytable-mcp/issues/72)) ([b6aef55](https://github.com/chrischall/easytable-mcp/commit/b6aef5514c6d8fbd68366c7dd67416a29fb90c89))
+
 ## [0.4.2](https://github.com/chrischall/easytable-mcp/compare/v0.4.1...v0.4.2) (2026-09-10)
 
 
