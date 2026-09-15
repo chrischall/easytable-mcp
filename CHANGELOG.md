@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.4](https://github.com/chrischall/easytable-mcp/compare/v0.4.3...v0.4.4) (2026-09-15)
+
+
+### Bug Fixes
+
+* **deps:** @fetchproxy/server 3.0.1 — capped peer frames, logged load drops, atomic identity writes ([#73](https://github.com/chrischall/easytable-mcp/issues/73)) ([7c67da9](https://github.com/chrischall/easytable-mcp/commit/7c67da982483d8977b5c490c3c4307e9faa0f1a7))
+
 ## [0.4.3](https://github.com/chrischall/easytable-mcp/compare/v0.4.2...v0.4.3) (2026-09-14)
 
 
