@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { IsoDate, NonEmptyString, PositiveInt, minifiedResult, toolAnnotations } from '@chrischall/mcp-utils';
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from '@modelcontextprotocol/server';
 import type { EasyTableClient } from '../client.js';
 
 const IdSchema = NonEmptyString.describe('Restaurant id — the `id` in a book.easytable.com/book/?id=<id> link.');
@@ -17,7 +17,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
       description:
         'List the bookable areas/types for a restaurant (e.g. "Boka Inne", "Boka baren"). Returns each area\'s type id for use in the other availability tools.',
       annotations: toolAnnotations({ readOnly: true }),
-      inputSchema: { id: IdSchema, lang: LangSchema },
+      inputSchema: z.object({ id: IdSchema, lang: LangSchema }),
     },
     async ({ id, lang }) => minifiedResult(await client.listTypes(id, lang)),
   );
@@ -28,7 +28,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
       description:
         'List bookable dates for a restaurant area and party size. Each entry has an ISO date and whether it is available.',
       annotations: toolAnnotations({ readOnly: true }),
-      inputSchema: { id: IdSchema, lang: LangSchema, type: TypeSchema, persons: PositiveInt },
+      inputSchema: z.object({ id: IdSchema, lang: LangSchema, type: TypeSchema, persons: PositiveInt }),
     },
     async ({ id, lang, type, persons }) =>
       minifiedResult(await client.listDates(id, lang, type, persons)),
@@ -40,13 +40,13 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
       description:
         'List available time slots for a restaurant area, date, and party size. Times are returned as HH:MM.',
       annotations: toolAnnotations({ readOnly: true }),
-      inputSchema: {
+      inputSchema: z.object({
         id: IdSchema,
         lang: LangSchema,
         type: TypeSchema,
         date: IsoDate.describe('Date to check, ISO YYYY-MM-DD (from easytable_list_dates).'),
         persons: PositiveInt,
-      },
+      }),
     },
     async ({ id, lang, type, date, persons }) =>
       minifiedResult(await client.listTimes(id, lang, type, date, persons)),
@@ -58,11 +58,11 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
       description:
         "Look up a restaurant's existing bookings made with a given mobile number. Returns each booking's id (for easytable_cancel_booking) plus a summary.",
       annotations: toolAnnotations({ readOnly: true }),
-      inputSchema: {
+      inputSchema: z.object({
         id: IdSchema,
         lang: LangSchema,
         mobile: NonEmptyString.describe('Mobile number the booking was made with, in E.164 (e.g. +46701234567).'),
-      },
+      }),
     },
     async ({ id, lang, mobile }) => minifiedResult(await client.findBookings(id, lang, mobile)),
   );

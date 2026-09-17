@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { IsoDate, NonEmptyString, PositiveInt, minifiedResult, schemaConfirm, toolAnnotations } from '@chrischall/mcp-utils';
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from '@modelcontextprotocol/server';
 import type { EasyTableClient } from '../client.js';
 import type { BookingResult } from '../jsonp.js';
 
@@ -38,12 +38,12 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
         'Cancel an existing booking. Look up the booking id first with easytable_find_bookings (it needs the mobile the booking was made with). ' +
         'Without confirm: true it returns a dry-run preview and makes NO network call; with confirm: true it cancels.',
       annotations: toolAnnotations({ readOnly: false, idempotent: true, openWorld: true }),
-      inputSchema: {
+      inputSchema: z.object({
         id: IdSchema,
         mobile: NonEmptyString.describe('Mobile the booking was made with, E.164 (e.g. +46701234567).'),
         bookingId: NonEmptyString.describe('Booking id from easytable_find_bookings.'),
         confirm: schemaConfirm,
-      },
+      }),
     },
     async ({ id, mobile, bookingId, confirm }) => {
       if (confirm !== true) {
@@ -83,7 +83,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
         'Create a restaurant booking. Reads the Cloudflare Turnstile token from your signed-in booking-widget tab (via the bridge) and submits it with the reservation — so a book.easytable.com/book/?id=<id> tab must be open and loaded. ' +
         'Without confirm: true it returns a dry-run preview and makes NO network call; with confirm: true it books.',
       annotations: toolAnnotations({ readOnly: false, idempotent: false, openWorld: true }),
-      inputSchema: { ...createFields, confirm: schemaConfirm },
+      inputSchema: z.object({ ...createFields, confirm: schemaConfirm }),
     },
     async ({ confirm, ...input }) => {
       if (confirm !== true) {
@@ -107,11 +107,11 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
         'Modify an existing booking (date/time/party size/details). Like create, it reads the Turnstile token from your signed-in widget tab. Get the existing booking id from easytable_find_bookings. ' +
         'Without confirm: true it returns a dry-run preview and makes NO network call; with confirm: true it applies the change.',
       annotations: toolAnnotations({ readOnly: false, idempotent: false, openWorld: true }),
-      inputSchema: {
+      inputSchema: z.object({
         ...createFields,
         existing: NonEmptyString.describe('Id of the existing booking to modify (from easytable_find_bookings).'),
         confirm: schemaConfirm,
-      },
+      }),
     },
     async ({ confirm, ...input }) => {
       if (confirm !== true) {
