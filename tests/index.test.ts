@@ -51,8 +51,18 @@ describe('tool registration', () => {
         probeFn: async () => '',
       });
     });
-    const tools = await harness.listTools();
+    const { tools } = await harness.client.listTools();
     const names = tools.map((t) => t.name).sort();
     expect(names).toEqual([...EXPECTED_TOOLS].sort());
+    const listDates = tools.find((tool) => tool.name === 'easytable_list_dates');
+    expect(listDates?.inputSchema).toMatchObject({
+      type: 'object',
+      properties: {
+        id: { type: 'string' },
+        lang: { type: 'string', default: 'en' },
+        persons: { type: 'integer' },
+      },
+      required: ['id', 'type', 'persons'],
+    });
   });
 });
