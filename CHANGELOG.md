@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.0.0](https://github.com/chrischall/easytable-mcp/compare/v0.4.4...v1.0.0) (2026-09-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* **mcp:** migrate server to SDK v2 ([#79](https://github.com/chrischall/easytable-mcp/issues/79))
+
+### Features
+
+* **mcp:** migrate server to SDK v2 ([#79](https://github.com/chrischall/easytable-mcp/issues/79)) ([fedf084](https://github.com/chrischall/easytable-mcp/commit/fedf084f29116e12c0dca6e6d8b881b0b02fa0b7))
+
+
+### Bug Fixes
+
+* **build:** preserve Zod initialization in standalone bundle ([#81](https://github.com/chrischall/easytable-mcp/issues/81)) ([537d9c8](https://github.com/chrischall/easytable-mcp/commit/537d9c852dcacb0b6e0b266c8d9268d1e0a1bb33))
+* **deps:** Bump the production-dependencies group with 3 updates ([#77](https://github.com/chrischall/easytable-mcp/issues/77)) ([c76af71](https://github.com/chrischall/easytable-mcp/commit/c76af71060347714ee0bee398c80f7f0221f7141))
+* **mcp:** verify SDK v2 tool schema ([#82](https://github.com/chrischall/easytable-mcp/issues/82)) ([4d5ebdf](https://github.com/chrischall/easytable-mcp/commit/4d5ebdf64e626eb88a0764d4b0a33e219a7f7d72))
+
 ## [0.4.4](https://github.com/chrischall/easytable-mcp/compare/v0.4.3...v0.4.4) (2026-09-15)
 
 
