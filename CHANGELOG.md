@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/chrischall/easytable-mcp/compare/v1.0.0...v1.1.0) (2026-09-19)
+
+
+### Features
+
+* **deps:** take mcp-utils 1.0.0, fixing server/discover ([#83](https://github.com/chrischall/easytable-mcp/issues/83)) ([1757084](https://github.com/chrischall/easytable-mcp/commit/175708415c168c1261e5c783ee4c5678cb29cbe7))
+
 ## [1.0.0](https://github.com/chrischall/easytable-mcp/compare/v0.4.4...v1.0.0) (2026-09-17)
 
 
