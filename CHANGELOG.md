@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/chrischall/easytable-mcp/compare/v1.1.0...v1.1.1) (2026-09-21)
+
+
+### Bug Fixes
+
+* **tools:** say that all three booking writes are destructive ([#85](https://github.com/chrischall/easytable-mcp/issues/85)) ([6e8ec07](https://github.com/chrischall/easytable-mcp/commit/6e8ec077269ddbe960f8eda95e4d841596f7a894))
+
 ## [1.1.0](https://github.com/chrischall/easytable-mcp/compare/v1.0.0...v1.1.0) (2026-09-19)
 
 
