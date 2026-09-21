@@ -1,7 +1,7 @@
 {
   "name": "easytable-mcp",
   "displayName": "easyTable",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "easyTable restaurant reservations for Claude — check availability, look up bookings, and create, modify or cancel reservations",
   "author": {
     "name": "Chris Hall",
