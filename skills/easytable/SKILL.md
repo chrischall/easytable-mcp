@@ -44,6 +44,12 @@ easyTable didn't clearly accept or reject), the booking may already exist —
 run `easytable_find_bookings` with the guest mobile before retrying.
 `cancel` needs no token.
 
+`modify` replaces the whole booking, and easyTable offers no way to read an
+existing booking's email or comment back. Ask the user for the booking's current
+email, comment (special requests, allergy notes) and company and pass them
+through unchanged, or pass `''` to clear one on purpose; the dry run lists what
+will be cleared.
+
 ## Notes
 
 - Times are HH:MM; the widget internally uses minute-of-day.

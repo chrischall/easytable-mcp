@@ -108,30 +108,52 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
   );
 
   // --- modify ---------------------------------------------------------------
+  // easyTable's modify endpoint takes the whole booking, not a patch, and there
+  // is no endpoint that returns an existing booking's details to merge over
+  // (find_bookings yields only an id + label). So the fields that would
+  // otherwise default to empty are required here: the caller must carry the
+  // existing values over, or pass '' to clear them on purpose.
+  const carriedOver = {
+    email: z
+      .union([z.string().email(), z.literal('')])
+      .describe("Guest email. REQUIRED — the booking's current email, or '' to remove it (also drops the confirmation mail)."),
+    comment: z
+      .string()
+      .describe("Free-text note / special requests. REQUIRED — the booking's current comment (e.g. allergy notes), or '' to remove it."),
+    company: z.string().describe("Company name. REQUIRED — the booking's current company, or '' for none."),
+  };
+  const CLEARABLE = ['email', 'comment', 'company'] as const;
+
   server.registerTool(
     'easytable_modify_booking',
     {
       description:
         'Modify an existing booking (date/time/party size/details). Like create, it reads the Turnstile token from your signed-in widget tab. Get the existing booking id from easytable_find_bookings. ' +
+        'The change replaces the whole booking: email, comment and company are required — pass the booking\'s current values to keep them (ask the user if unknown), or \'\' to clear them; the newsletter opt-in is reset. ' +
         'Without confirm: true it returns a dry-run preview and makes NO network call; with confirm: true it applies the change.',
       annotations: toolAnnotations({ readOnly: false, idempotent: false, openWorld: true, destructive: true }),
       inputSchema: z.object({
         ...createFields,
+        ...carriedOver,
         existing: NonEmptyString.describe('Id of the existing booking to modify (from easytable_find_bookings).'),
         confirm: schemaConfirm,
       }),
     },
     async ({ confirm, ...input }) => {
+      const clears = CLEARABLE.filter((k) => input[k] === '');
       if (confirm !== true) {
         return minifiedResult({
           dryRun: true,
           action: 'modify_booking',
           preview: input,
-          note: 'Dry run — re-run with confirm: true to apply this change. A signed-in book.easytable.com tab must be open so the Turnstile token can be read.',
+          clears,
+          note:
+            (clears.length > 0 ? `These fields will be cleared on the booking: ${clears.join(', ')}. ` : '') +
+            'Dry run — re-run with confirm: true to apply this change. A signed-in book.easytable.com tab must be open so the Turnstile token can be read.',
         });
       }
       const result = await client.modifyBooking(input);
-      return minifiedResult({ action: 'modify_booking', ...summarize(result) });
+      return minifiedResult({ action: 'modify_booking', clears, ...summarize(result) });
     },
   );
 }

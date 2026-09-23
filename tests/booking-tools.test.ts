@@ -55,7 +55,41 @@ describe('write outcomes (fleet-audit#85)', () => {
   });
 
   it('an object without a Status is unknown too', async () => {
-    const out = await call(bridgeAnswering('{"message":"done"}'), 'easytable_modify_booking', { ...createArgs, existing: 'B1' });
+    const out = await call(bridgeAnswering('{"message":"done"}'), 'easytable_modify_booking', { ...createArgs, existing: 'B1', email: '', comment: '', company: '' });
     expect(out).toMatchObject({ ok: false, outcome: 'unknown', raw: { message: 'done' } });
+  });
+});
+
+describe('modify never silently blanks fields (fleet-audit#86)', () => {
+  const modifyArgs = { ...createArgs, existing: 'B1' };
+
+  it('requires email, comment and company so the caller carries them over', async () => {
+    harness = await createTestHarness((server) =>
+      registerBookingTools(server, new EasyTableClient(bridgeAnswering('cb([{"Status":1}])'))),
+    );
+    const { tools } = await harness.client.listTools();
+    const modify = tools.find((t) => t.name === 'easytable_modify_booking')!;
+    expect(modify.inputSchema.required).toEqual(expect.arrayContaining(['email', 'comment', 'company']));
+    expect(modify.description).toMatch(/replaces the whole booking/i);
+    // create keeps them optional
+    const create = tools.find((t) => t.name === 'easytable_create_booking')!;
+    expect(create.inputSchema.required).not.toContain('email');
+  });
+
+  it('rejects a modify that leaves them out', async () => {
+    harness = await createTestHarness((server) =>
+      registerBookingTools(server, new EasyTableClient(bridgeAnswering('cb([{"Status":1}])'))),
+    );
+    const res = await harness.client.callTool({ name: 'easytable_modify_booking', arguments: modifyArgs });
+    expect(res.isError).toBe(true);
+  });
+
+  it('accepts empty strings and names the fields that will be cleared in the dry run', async () => {
+    const out = await call(bridgeAnswering(''), 'easytable_modify_booking', {
+      ...modifyArgs, confirm: false, email: 'a@b.se', comment: '', company: '',
+    });
+    expect(out).toMatchObject({ dryRun: true });
+    expect(out.clears).toEqual(['comment', 'company']);
+    expect(String(out.note)).toMatch(/cleared/i);
   });
 });
