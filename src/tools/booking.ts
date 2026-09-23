@@ -2,30 +2,38 @@ import { z } from 'zod';
 import { IsoDate, NonEmptyString, PositiveInt, minifiedResult, schemaConfirm, toolAnnotations } from '@chrischall/mcp-utils';
 import type { McpServer } from '@modelcontextprotocol/server';
 import type { EasyTableClient } from '../client.js';
-import type { BookingResult } from '../jsonp.js';
+import { classifyWrite, type WriteOutcome, type WriteResponse } from '../jsonp.js';
 
 const IdSchema = NonEmptyString.describe('Restaurant id — the `id` in a book.easytable.com/book/?id=<id> link.');
 const LangSchema = z.string().default('en').describe('Widget language code (en, se, da, …). Defaults to en.');
 
 /** Human-facing summary of an easyTable write result. */
-function summarize(result: BookingResult | null): {
+function summarize(res: WriteResponse): {
   ok: boolean;
+  outcome: WriteOutcome;
   status: number | undefined;
   message: string;
   confirmUrl?: string;
-  raw: BookingResult | null;
+  raw: unknown;
 } {
-  const status = result?.Status;
-  const ok = status === 1;
-  const message = ok
-    ? 'easyTable accepted the request.'
-    : 'easyTable did not confirm the request — check the returned error markup.';
+  const outcome = classifyWrite(res);
+  const result = res.result;
+  const message =
+    outcome === 'ok'
+      ? 'easyTable accepted the request.'
+      : outcome === 'rejected'
+        ? 'easyTable rejected the request — see the error markup in raw.'
+        : 'easyTable answered with an unrecognised response, so the outcome is unknown — the change may already have gone through. ' +
+          'Run easytable_find_bookings with the guest mobile before retrying; do not re-submit blindly.';
   return {
-    ok,
-    status,
+    ok: outcome === 'ok',
+    outcome,
+    status: result?.Status,
     message,
     ...(result?.confirmUrl ? { confirmUrl: String(result.confirmUrl) } : {}),
-    raw: result,
+    // Never drop the body: the parsed result when there is one, otherwise the
+    // raw payload (text, array, object) easyTable actually sent.
+    raw: result ?? res.payload,
   };
 }
 

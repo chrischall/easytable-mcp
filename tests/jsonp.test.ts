@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseJsonp, firstBookingResult } from '../src/jsonp.js';
+import { parseJsonp, firstBookingResult, parseWriteResponse, classifyWrite } from '../src/jsonp.js';
 
 describe('parseJsonp', () => {
   it('unwraps a callback-wrapped JSON array', () => {
@@ -37,5 +37,15 @@ describe('firstBookingResult', () => {
   it('returns null for a string or empty array', () => {
     expect(firstBookingResult('OK')).toBeNull();
     expect(firstBookingResult([])).toBeNull();
+  });
+});
+
+describe('classifyWrite (fleet-audit#85)', () => {
+  it('maps Status 1 / 0 / anything else to ok / rejected / unknown', () => {
+    expect(classifyWrite(parseWriteResponse('cb([{"Status":1}])'))).toBe('ok');
+    expect(classifyWrite(parseWriteResponse('cb([{"Status":0,"errHtml":"x"}])'))).toBe('rejected');
+    expect(classifyWrite(parseWriteResponse('OK'))).toBe('unknown');
+    expect(classifyWrite(parseWriteResponse('cb(["OK"])'))).toBe('unknown');
+    expect(parseWriteResponse('OK').payload).toBe('OK');
   });
 });

@@ -75,7 +75,7 @@ describe('EasyTableClient cancel (tokenless)', () => {
       mobile: '+46701234567',
       bookingId: 'BKG-1',
     });
-    expect(res).toEqual({ Status: 1 });
+    expect(res.result).toEqual({ Status: 1 });
     expect(calls[0].method).toBe('GET');
     expect(calls[0].url).toContain('booking=BKG-1');
     // cancel must NOT read a Turnstile token
@@ -108,7 +108,7 @@ describe('EasyTableClient create (Turnstile-gated)', () => {
     });
     const res = await new EasyTableClient(bridge).createBooking(input);
     expect(domCalls[0].names).toEqual(['turnstileToken']);
-    expect(res).toMatchObject({ Status: 1, confirmUrl: '/ok' });
+    expect(res.result).toMatchObject({ Status: 1, confirmUrl: '/ok' });
     // confirm.asp was fetched with minute-of-day time
     const confirmCall = calls.find((c) => c.url.includes('confirm.asp'))!;
     expect(confirmCall.url).toContain('time=1035');
@@ -158,7 +158,7 @@ describe('EasyTableClient modify (Turnstile-gated)', () => {
       mobile: '+46701234567',
       existing: 'BKG-42',
     });
-    expect(res).toMatchObject({ Status: 1 });
+    expect(res.result).toMatchObject({ Status: 1 });
     expect(domCalls[0].names).toEqual(['turnstileToken']);
     const post = calls.find((c) => c.url.includes('json_modify_booking.asp'))!;
     const sent = JSON.parse(post.body!);

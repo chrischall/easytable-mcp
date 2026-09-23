@@ -22,7 +22,7 @@ import {
   type FoundBooking,
   type BookingConfig,
 } from './parse.js';
-import { parseJsonp, firstBookingResult, type BookingResult } from './jsonp.js';
+import { parseWriteResponse, type WriteResponse } from './jsonp.js';
 import {
   buildCreatePayload,
   buildModifyPayload,
@@ -116,13 +116,13 @@ export class EasyTableClient {
     id: string;
     mobile: string;
     bookingId: string;
-  }): Promise<BookingResult | null> {
+  }): Promise<WriteResponse> {
     const body = await this.getRaw('/user/ajax/json_cancel_booking.asp', {
       place: args.id,
       mobile: args.mobile,
       booking: args.bookingId,
     });
-    return firstBookingResult(parseJsonp(body));
+    return parseWriteResponse(body);
   }
 
   /**
@@ -132,25 +132,25 @@ export class EasyTableClient {
    * `confirm.asp` fragment) and `lcid` (from the page HTML). It rejects a
    * booking that's missing any of them, so we harvest them first.
    */
-  async createBooking(input: CreateBookingInput): Promise<BookingResult | null> {
+  async createBooking(input: CreateBookingInput): Promise<WriteResponse> {
     const [config, token] = await Promise.all([
       this.harvestBookingConfig(input),
       this.readTurnstileToken(),
     ]);
     const payload = buildCreatePayload(mergeConfig(input, config), token);
     const body = await this.postJson('/user/ajax/json_booking.asp', payload);
-    return firstBookingResult(parseJsonp(body));
+    return parseWriteResponse(body);
   }
 
   /** Modify an existing booking. Same harvesting + Turnstile requirement as create. */
-  async modifyBooking(input: ModifyBookingInput): Promise<BookingResult | null> {
+  async modifyBooking(input: ModifyBookingInput): Promise<WriteResponse> {
     const [config, token] = await Promise.all([
       this.harvestBookingConfig(input),
       this.readTurnstileToken(),
     ]);
     const payload = buildModifyPayload(mergeConfig(input, config), token);
     const body = await this.postJson('/user/ajax/json_modify_booking.asp', payload);
-    return firstBookingResult(parseJsonp(body));
+    return parseWriteResponse(body);
   }
 
   /**
