@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/chrischall/easytable-mcp/compare/v1.1.2...v1.1.3) (2026-09-23)
+
+
+### Bug Fixes
+
+* **booking:** stop booking writes from hiding unknown outcomes or erasing booking details ([#90](https://github.com/chrischall/easytable-mcp/issues/90)) ([df60923](https://github.com/chrischall/easytable-mcp/commit/df60923be005bf5b6d7a645b03a26eb3a32b62ac))
+
 ## [1.1.2](https://github.com/chrischall/easytable-mcp/compare/v1.1.1...v1.1.2) (2026-09-23)
 
 
