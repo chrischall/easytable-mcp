@@ -2,30 +2,38 @@ import { z } from 'zod';
 import { IsoDate, NonEmptyString, PositiveInt, minifiedResult, schemaConfirm, toolAnnotations } from '@chrischall/mcp-utils';
 import type { McpServer } from '@modelcontextprotocol/server';
 import type { EasyTableClient } from '../client.js';
-import type { BookingResult } from '../jsonp.js';
+import { classifyWrite, type WriteOutcome, type WriteResponse } from '../jsonp.js';
 
 const IdSchema = NonEmptyString.describe('Restaurant id — the `id` in a book.easytable.com/book/?id=<id> link.');
 const LangSchema = z.string().default('en').describe('Widget language code (en, se, da, …). Defaults to en.');
 
 /** Human-facing summary of an easyTable write result. */
-function summarize(result: BookingResult | null): {
+function summarize(res: WriteResponse): {
   ok: boolean;
+  outcome: WriteOutcome;
   status: number | undefined;
   message: string;
   confirmUrl?: string;
-  raw: BookingResult | null;
+  raw: unknown;
 } {
-  const status = result?.Status;
-  const ok = status === 1;
-  const message = ok
-    ? 'easyTable accepted the request.'
-    : 'easyTable did not confirm the request — check the returned error markup.';
+  const outcome = classifyWrite(res);
+  const result = res.result;
+  const message =
+    outcome === 'ok'
+      ? 'easyTable accepted the request.'
+      : outcome === 'rejected'
+        ? 'easyTable rejected the request — see the error markup in raw.'
+        : 'easyTable answered with an unrecognised response, so the outcome is unknown — the change may already have gone through. ' +
+          'Run easytable_find_bookings with the guest mobile before retrying; do not re-submit blindly.';
   return {
-    ok,
-    status,
+    ok: outcome === 'ok',
+    outcome,
+    status: result?.Status,
     message,
     ...(result?.confirmUrl ? { confirmUrl: String(result.confirmUrl) } : {}),
-    raw: result,
+    // Never drop the body: the parsed result when there is one, otherwise the
+    // raw payload (text, array, object) easyTable actually sent.
+    raw: result ?? res.payload,
   };
 }
 
@@ -100,30 +108,52 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
   );
 
   // --- modify ---------------------------------------------------------------
+  // easyTable's modify endpoint takes the whole booking, not a patch, and there
+  // is no endpoint that returns an existing booking's details to merge over
+  // (find_bookings yields only an id + label). So the fields that would
+  // otherwise default to empty are required here: the caller must carry the
+  // existing values over, or pass '' to clear them on purpose.
+  const carriedOver = {
+    email: z
+      .union([z.string().email(), z.literal('')])
+      .describe("Guest email. REQUIRED — the booking's current email, or '' to remove it (also drops the confirmation mail)."),
+    comment: z
+      .string()
+      .describe("Free-text note / special requests. REQUIRED — the booking's current comment (e.g. allergy notes), or '' to remove it."),
+    company: z.string().describe("Company name. REQUIRED — the booking's current company, or '' for none."),
+  };
+  const CLEARABLE = ['email', 'comment', 'company'] as const;
+
   server.registerTool(
     'easytable_modify_booking',
     {
       description:
         'Modify an existing booking (date/time/party size/details). Like create, it reads the Turnstile token from your signed-in widget tab. Get the existing booking id from easytable_find_bookings. ' +
+        'The change replaces the whole booking: email, comment and company are required — pass the booking\'s current values to keep them (ask the user if unknown), or \'\' to clear them; the newsletter opt-in is reset. ' +
         'Without confirm: true it returns a dry-run preview and makes NO network call; with confirm: true it applies the change.',
       annotations: toolAnnotations({ readOnly: false, idempotent: false, openWorld: true, destructive: true }),
       inputSchema: z.object({
         ...createFields,
+        ...carriedOver,
         existing: NonEmptyString.describe('Id of the existing booking to modify (from easytable_find_bookings).'),
         confirm: schemaConfirm,
       }),
     },
     async ({ confirm, ...input }) => {
+      const clears = CLEARABLE.filter((k) => input[k] === '');
       if (confirm !== true) {
         return minifiedResult({
           dryRun: true,
           action: 'modify_booking',
           preview: input,
-          note: 'Dry run — re-run with confirm: true to apply this change. A signed-in book.easytable.com tab must be open so the Turnstile token can be read.',
+          clears,
+          note:
+            (clears.length > 0 ? `These fields will be cleared on the booking: ${clears.join(', ')}. ` : '') +
+            'Dry run — re-run with confirm: true to apply this change. A signed-in book.easytable.com tab must be open so the Turnstile token can be read.',
         });
       }
       const result = await client.modifyBooking(input);
-      return minifiedResult({ action: 'modify_booking', ...summarize(result) });
+      return minifiedResult({ action: 'modify_booking', clears, ...summarize(result) });
     },
   );
 }

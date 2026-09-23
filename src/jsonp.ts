@@ -61,3 +61,33 @@ export function firstBookingResult(payload: unknown): BookingResult | null {
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
 }
+
+/**
+ * A write response: the first `BookingResult` when the body had one, plus the
+ * parsed payload itself (object, array, or raw text) so an unrecognised
+ * answer is never thrown away.
+ */
+export interface WriteResponse {
+  result: BookingResult | null;
+  payload: unknown;
+}
+
+/** Parse a write endpoint's body into a {@link WriteResponse}. */
+export function parseWriteResponse(body: string): WriteResponse {
+  const payload = parseJsonp(body);
+  return { result: firstBookingResult(payload), payload };
+}
+
+/**
+ * The three outcomes of a write: easyTable accepted it (`Status` 1), rejected
+ * it (`Status` 0), or answered with something else — in which case it may or
+ * may not have applied, and the caller must reconcile before retrying.
+ */
+export type WriteOutcome = 'ok' | 'rejected' | 'unknown';
+
+export function classifyWrite(res: WriteResponse): WriteOutcome {
+  const status = res.result?.Status;
+  if (status === 1) return 'ok';
+  if (status === 0) return 'rejected';
+  return 'unknown';
+}

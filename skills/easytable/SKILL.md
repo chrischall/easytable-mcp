@@ -39,7 +39,16 @@ return a dry-run preview first. Re-run with `confirm: true` to apply.
 the widget tab's hidden input, so a `book.easytable.com/book/?id=<id>` tab must
 be open and loaded when you confirm. The token is single-use and expires after
 a few minutes; if a create fails on the token, reload the tab and retry.
+If a create/modify comes back with an unknown outcome (a timeout, or a reply
+easyTable didn't clearly accept or reject), the booking may already exist —
+run `easytable_find_bookings` with the guest mobile before retrying.
 `cancel` needs no token.
+
+`modify` replaces the whole booking, and easyTable offers no way to read an
+existing booking's email or comment back. Ask the user for the booking's current
+email, comment (special requests, allergy notes) and company and pass them
+through unchanged, or pass `''` to clear one on purpose; the dry run lists what
+will be cleared.
 
 ## Notes
 
