@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2](https://github.com/chrischall/easytable-mcp/compare/v1.1.1...v1.1.2) (2026-09-23)
+
+
+### Bug Fixes
+
+* **deps:** require zod ^4.6.5 to match @chrischall/mcp-utils 2.4.0 ([#89](https://github.com/chrischall/easytable-mcp/issues/89)) ([20d5319](https://github.com/chrischall/easytable-mcp/commit/20d5319392776acdb451a643ca575ef1a17a502d))
+* **deps:** upgrade @chrischall/mcp-utils to 2.4.0 and @fetchproxy/* to 3.2.0 ([#87](https://github.com/chrischall/easytable-mcp/issues/87)) ([720d1fa](https://github.com/chrischall/easytable-mcp/commit/720d1fa3dfd90ba4f3c78790b7220750555eb913))
+
 ## [1.1.1](https://github.com/chrischall/easytable-mcp/compare/v1.1.0...v1.1.1) (2026-09-21)
 
 
