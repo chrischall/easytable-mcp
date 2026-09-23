@@ -217,12 +217,27 @@ export class EasyTableClient {
   private async postJson(path: string, payload: unknown): Promise<string> {
     // The widget POSTs the stringified dataObj with a form content-type (it
     // uses jQuery `dataType: 'jsonp'`, but the body is still the JSON string).
-    const res = await this.bridge.fetch({
-      url: this.buildUrl(path, {}),
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-      body: JSON.stringify(payload),
-    });
+    let res: BridgeResponse;
+    try {
+      res = await this.bridge.fetch({
+        url: this.buildUrl(path, {}),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+        body: JSON.stringify(payload),
+      });
+    } catch (err) {
+      // A timeout (or the bridge dropping mid-flight) does not prove the POST
+      // never reached easyTable — the booking may have landed and only the
+      // reply was lost. The bridge deliberately does not re-send it; tell the
+      // model to reconcile before it retries, or it double-books.
+      throw new McpToolError(
+        `easyTable write to ${path} did not return a response — the outcome is unknown (${err instanceof Error ? err.message : String(err)}).`,
+        {
+          hint: 'The booking change may already have gone through. Run easytable_find_bookings with the guest mobile to check before retrying; do not re-submit blindly.',
+          cause: err,
+        },
+      );
+    }
     this.assertOk(res, path);
     return res.body;
   }
