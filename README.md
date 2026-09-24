@@ -21,13 +21,24 @@ identified by its `id`).
 | `easytable_list_dates` | read — bookable dates for an area + party size |
 | `easytable_list_times` | read — available time slots |
 | `easytable_find_bookings` | read — look up bookings by phone number |
-| `easytable_create_booking` | write (confirm-gated) — make a reservation |
-| `easytable_modify_booking` | write (confirm-gated) — change a reservation |
-| `easytable_cancel_booking` | write (confirm-gated) — cancel a reservation |
+| `easytable_create_booking` | write (confirmed) — make a reservation |
+| `easytable_modify_booking` | write (confirmed) — change a reservation |
+| `easytable_cancel_booking` | write (confirmed) — cancel a reservation |
 | `easytable_healthcheck` | read — bridge connection status |
 
-Writes are `confirm`-gated: without `confirm: true` they return a dry-run
-preview and make no network call.
+## Confirmations
+
+Every write asks you to confirm it first. A client that can show a
+confirmation prompt (Claude Code) shows one. Elsewhere the first call makes no
+network call and returns a preview plus a `confirmToken`; only a repeat call
+with the same arguments and that token books, changes or cancels. The token is
+single-use, and a changed argument invalidates it.
+
+| variable | default | |
+|---|---|---|
+| `MCP_CONFIRM_MODE` | `ask-user` | What a write does on a client that cannot show a confirmation prompt (claude.ai, Claude Desktop). `ask-user`: two steps — the first call does nothing and returns a preview plus a token, and the model must get your approval in chat before calling again with it. `auto`: the same two steps, but the model may use the token after reviewing the preview itself. `refuse`: writes are refused on such clients. A client that can show prompts (Claude Code) always gets the real prompt. An unrecognised value is treated as `refuse`. |
+| `MCP_CONFIRM_TTL_SECONDS` | `600` | How long a token stays valid. |
+| `MCP_CONFIRM_SECRET` | random per process | Signing key; set it only if tokens must survive a server restart. |
 
 ## Setup
 

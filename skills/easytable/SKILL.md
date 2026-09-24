@@ -30,10 +30,15 @@ To change or cancel, first `easytable_find_bookings` with the mobile the
 booking was made under, then `easytable_modify_booking` /
 `easytable_cancel_booking` with the returned booking id.
 
-## Writes are confirm-gated
+## Writes are confirmed first
 
-`create`, `modify`, and `cancel` do nothing without `confirm: true` — they
-return a dry-run preview first. Re-run with `confirm: true` to apply.
+`create`, `modify`, and `cancel` ask the user to confirm before anything is
+sent: a confirmation prompt where the client supports one. Otherwise the first
+call makes no network call and returns `status: "confirmation-required"` with a
+preview and a `confirmToken` — show the user the preview, and only after they
+approve it in chat call again with the same arguments plus that `confirmToken`.
+The token is single-use; a changed argument is refused as `DRAFT_CHANGED` with a
+fresh preview (see `MCP_CONFIRM_MODE`).
 
 `create` and `modify` submit a Cloudflare Turnstile token the MCP reads from
 the widget tab's hidden input, so a `book.easytable.com/book/?id=<id>` tab must
@@ -47,7 +52,7 @@ run `easytable_find_bookings` with the guest mobile before retrying.
 `modify` replaces the whole booking, and easyTable offers no way to read an
 existing booking's email or comment back. Ask the user for the booking's current
 email, comment (special requests, allergy notes) and company and pass them
-through unchanged, or pass `''` to clear one on purpose; the dry run lists what
+through unchanged, or pass `''` to clear one on purpose; the preview lists what
 will be cleared.
 
 ## Notes
