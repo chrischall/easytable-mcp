@@ -101,6 +101,6 @@ console). Treat create/modify as a manual/hybrid flow, not a clean one-shot.
   on their own signed-in browser session.
 - `fpx health -p easytable` shows bridge connection state when a call fails.
 - Don't fire real create/cancel calls just to "test" the flow — a
-  `confirm`-equivalent action here books/cancels a real table at a real
+  confirmed write here books/cancels a real table at a real
   restaurant.
 - This project is developed and maintained by AI (Claude).

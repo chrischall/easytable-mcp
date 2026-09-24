@@ -50,7 +50,8 @@ booking, 2026-07-09) on top of the guest details:
 
 **Verified live (owner-authorized):** one real booking was created + cancelled to
 pin the payload shape and prove the `bookingToken` requirement. Writes are
-confirm-gated with a dry-run preview; payload shapes are unit-tested. Don't fire
+confirmed first (an elicitation prompt, or a preview + `confirmToken` two-step
+where the client cannot prompt); payload shapes are unit-tested. Don't fire
 extra real bookings to "re-verify" — it's a real reservation at a real restaurant.
 
 ## Dependency note (pre-publish)
@@ -67,7 +68,8 @@ During development these are `npm link`ed locally.
 
 ## Conventions
 
-TDD; every write is `confirm`-gated with a dry-run `preview()` and routes through
-the client. Tests mock the bridge (the `Bridge` interface in `client.ts`) — no
+TDD; every write passes `confirmWrite` (`src/tools/booking.ts`, mcp-utils'
+`requireConfirmationWithFallback` + `confirmationFromEnv`) before it routes through
+the client — the token's payload is exactly what the write submits. Tests mock the bridge (the `Bridge` interface in `client.ts`) — no
 real network. `docs/EASYTABLE-API.md` pins the reverse-engineered request/response
 shapes. Version lives once in `src/version.ts` (`x-release-please-version`).
