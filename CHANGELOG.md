@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/chrischall/easytable-mcp/compare/v1.1.3...v1.2.0) (2026-09-24)
+
+
+### Features
+
+* confirm writes with a preview token instead of confirm: true ([#92](https://github.com/chrischall/easytable-mcp/issues/92)) ([d1cdcc6](https://github.com/chrischall/easytable-mcp/commit/d1cdcc689b59cd4eb0580f69ed0c5a25e867782f))
+
 ## [1.1.3](https://github.com/chrischall/easytable-mcp/compare/v1.1.2...v1.1.3) (2026-09-23)
 
 
