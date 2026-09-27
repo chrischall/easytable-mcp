@@ -63,6 +63,15 @@ describe('EasyTableClient reads', () => {
       new EasyTableClient(bridge).listDates('1fdfc', 'en', '13991', 2),
     ).rejects.toThrow(/403/);
   });
+
+  it('names the ContextMint Bridge (not the old fetchproxy name) in the HTTP error hint', async () => {
+    const { bridge } = fakeBridge({ responses: { 'calendar.asp': { status: 403 } } });
+    const err = await new EasyTableClient(bridge)
+      .listDates('1fdfc', 'en', '13991', 2)
+      .catch((e: unknown) => e as { hint?: string });
+    expect(err.hint).toMatch(/ContextMint Bridge/);
+    expect(err.hint).not.toMatch(/fetchproxy bridge/i);
+  });
 });
 
 describe('EasyTableClient cancel (tokenless)', () => {

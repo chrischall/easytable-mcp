@@ -64,7 +64,7 @@
     },
     {
       "name": "easytable_healthcheck",
-      "description": "Check the fetchproxy bridge connection to book.easytable.com"
+      "description": "Check the ContextMint Bridge connection to book.easytable.com"
     }
   ]
 }

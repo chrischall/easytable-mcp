@@ -46,7 +46,15 @@ single-use, and a changed argument invalidates it.
    [releases](https://github.com/nullnet-app/contextmint-bridge/releases):
    in Chrome, unzip the `contextmint-bridge-chrome-*.zip` asset and load it
    unpacked (`chrome://extensions` → Developer mode → Load unpacked); in
-   Safari, it ships inside the ContextMint app.
+   Safari, it ships inside the ContextMint app, which has no public download
+   link yet. ContextMint Bridge is the fetchproxy browser extension under its
+   new name, from the same maintainer — fetchproxy's own
+   [README](https://github.com/chrischall/fetchproxy#extension) points to it.
+   Its source is public at
+   [nullnet-app/contextmint-bridge](https://github.com/nullnet-app/contextmint-bridge):
+   build it yourself, or check a release zip against the `.sha256` file
+   published beside it
+   (`shasum -a 256 -c contextmint-bridge-chrome-<version>.zip.sha256`).
 2. Open a booking widget in Chrome: `https://book.easytable.com/book/?id=<id>`
    and let it finish loading.
 3. The first tool call prints a one-time pair code to approve in ContextMint Bridge.
