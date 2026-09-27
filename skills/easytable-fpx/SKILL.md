@@ -15,7 +15,7 @@ description: >-
 easyTable fronts every `book.easytable.com` endpoint — reads and writes alike
 — with a Cloudflare check that 403s any plain `curl`/Node request. `fpx`
 routes the request through the user's own signed-in browser tab (the
-Transporter extension), which has already cleared the challenge, so the same
+ContextMint Bridge extension), which has already cleared the challenge, so the same
 requests succeed. There's no easyTable login: a restaurant is identified only
 by its `id` (a.k.a. `place`) from its widget URL
 `https://book.easytable.com/book/?id=<placeId>`.
@@ -28,10 +28,12 @@ one-shot CLI calls instead of a running server.
 ```sh
 npm install -g @fetchproxy/cli               # provides `fpx`
 fpx profile add easytable --domain easytable.com
-fpx pair -p easytable                        # prints a pair code → approve in Transporter
+fpx pair -p easytable                        # prints a pair code → approve in ContextMint Bridge
 ```
 
-Requirements: the **Transporter** extension installed, with an open
+Requirements: the **ContextMint Bridge** extension installed (from
+https://github.com/nullnet-app/contextmint-bridge/releases — Chrome: load the
+chrome zip unpacked; Safari: ships inside the ContextMint app), with an open
 `https://book.easytable.com/book/?id=<placeId>` tab left to finish loading
 (its Turnstile check solves itself), and Chrome **Site access** allowing
 `easytable.com`. Pairing persists after the first approval.
