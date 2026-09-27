@@ -9,13 +9,15 @@ easyTable is a restaurant table-booking system. Each restaurant has a public
 booking widget at `https://book.easytable.com/book/?id=<restaurantId>` — the
 `id` is the only identifier (there's no login). This MCP drives that widget
 through the user's own signed-in, Cloudflare-cleared browser tab via the
-fetchproxy bridge; the site blocks any server-side request.
+ContextMint Bridge extension (fetchproxy's browser extension); the site blocks any server-side request.
 
 ## Setup (one time)
 
 1. Install the ContextMint Bridge browser extension from
    https://github.com/nullnet-app/contextmint-bridge/releases (Chrome: load the
-   `contextmint-bridge-chrome-*.zip` unpacked; Safari: ships inside the ContextMint app).
+   `contextmint-bridge-chrome-*.zip` unpacked; Safari: ships inside the ContextMint app,
+   no public download yet). It is the renamed fetchproxy extension, same maintainer;
+   source is public — build it or verify the zip with its published `.sha256`.
 2. Open a booking widget in Chrome: `https://book.easytable.com/book/?id=<restaurantId>`.
    Let the page finish loading — its Cloudflare Turnstile check solves itself.
 3. The first tool call prints a one-time pair code; approve it in ContextMint Bridge.

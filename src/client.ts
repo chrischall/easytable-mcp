@@ -1,6 +1,6 @@
 /**
  * easyTable client. Every request rides the user's own signed-in
- * `book.easytable.com` browser tab via the fetchproxy bridge — the site
+ * `book.easytable.com` browser tab via the fetchproxy bridge (the ContextMint Bridge extension) — the site
  * Cloudflare-403s any server-side request, so there's nothing to fetch
  * directly. There's no login: the restaurant is identified by its `id`.
  *
@@ -251,7 +251,7 @@ export class EasyTableClient {
   private assertOk(res: BridgeResponse, path: string): void {
     if (res.status >= 200 && res.status < 300) return;
     throw new McpToolError(`easyTable request to ${path} failed (HTTP ${res.status}).`, {
-      hint: `Make sure a signed-in ${BOOK_HOST} tab is open in Chrome and the fetchproxy bridge is paired. A 403 usually means the tab needs a reload to clear the Cloudflare check.`,
+      hint: `Make sure a signed-in ${BOOK_HOST} tab is open in Chrome and the ContextMint Bridge extension is paired. A 403 usually means the tab needs a reload to clear the Cloudflare check.`,
     });
   }
 }

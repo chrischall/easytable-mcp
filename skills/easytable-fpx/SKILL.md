@@ -33,7 +33,9 @@ fpx pair -p easytable                        # prints a pair code → approve in
 
 Requirements: the **ContextMint Bridge** extension installed (from
 https://github.com/nullnet-app/contextmint-bridge/releases — Chrome: load the
-chrome zip unpacked; Safari: ships inside the ContextMint app), with an open
+chrome zip unpacked; Safari: ships inside the ContextMint app, no public download
+yet — it is the renamed fetchproxy extension, same maintainer; source is public, so
+build it or verify the zip with its published `.sha256`), with an open
 `https://book.easytable.com/book/?id=<placeId>` tab left to finish loading
 (its Turnstile check solves itself), and Chrome **Site access** allowing
 `easytable.com`. Pairing persists after the first approval.
