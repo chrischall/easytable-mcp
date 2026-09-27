@@ -16,7 +16,7 @@ ContextMint Bridge extension (fetchproxy's browser extension); the site blocks a
 1. Install the ContextMint Bridge browser extension from
    https://github.com/nullnet-app/contextmint-bridge/releases (Chrome: load the
    `contextmint-bridge-chrome-*.zip` unpacked; Safari: ships inside the ContextMint app,
-   no public download yet). It is the renamed fetchproxy extension, same maintainer;
+   no public download yet — use Chrome for now). It is the renamed fetchproxy extension, same maintainer;
    source is public — build it or verify the zip with its published `.sha256`.
 2. Open a booking widget in Chrome: `https://book.easytable.com/book/?id=<restaurantId>`.
    Let the page finish loading — its Cloudflare Turnstile check solves itself.

@@ -47,7 +47,7 @@ single-use, and a changed argument invalidates it.
    in Chrome, unzip the `contextmint-bridge-chrome-*.zip` asset and load it
    unpacked (`chrome://extensions` → Developer mode → Load unpacked); in
    Safari, it ships inside the ContextMint app, which has no public download
-   link yet. ContextMint Bridge is the fetchproxy browser extension under its
+   link yet, so use Chrome for now. ContextMint Bridge is the fetchproxy browser extension under its
    new name, from the same maintainer — fetchproxy's own
    [README](https://github.com/chrischall/fetchproxy#extension) points to it.
    Its source is public at
