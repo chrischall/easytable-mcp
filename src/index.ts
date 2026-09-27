@@ -18,9 +18,9 @@ await bridge.start();
 const banner =
   `[easytable-mcp] v${VERSION} — routes every request through your signed-in ` +
   'book.easytable.com tab via the @fetchproxy/server bridge, reusing that ' +
-  'authenticated (Cloudflare-cleared) session. Install the fetchproxy extension ' +
-  '(https://github.com/chrischall/fetchproxy) and open a booking-widget tab; the ' +
-  'first request prints a one-time pair code to approve in the extension. ' +
+  'authenticated (Cloudflare-cleared) session. Install the ContextMint Bridge extension ' +
+  '(https://github.com/nullnet-app/contextmint-bridge/releases) and open a booking-widget tab; the ' +
+  'first request prints a one-time pair code to approve in ContextMint Bridge. ' +
   'This project was developed and is maintained by AI. Use at your own discretion.';
 
 await runMcp({

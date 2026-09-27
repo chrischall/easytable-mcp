@@ -42,11 +42,14 @@ single-use, and a changed argument invalidates it.
 
 ## Setup
 
-1. Install the [fetchproxy](https://github.com/chrischall/fetchproxy) browser
-   extension.
+1. Install the ContextMint Bridge browser extension from its
+   [releases](https://github.com/nullnet-app/contextmint-bridge/releases):
+   in Chrome, unzip the `contextmint-bridge-chrome-*.zip` asset and load it
+   unpacked (`chrome://extensions` → Developer mode → Load unpacked); in
+   Safari, it ships inside the ContextMint app.
 2. Open a booking widget in Chrome: `https://book.easytable.com/book/?id=<id>`
    and let it finish loading.
-3. The first tool call prints a one-time pair code to approve in the extension.
+3. The first tool call prints a one-time pair code to approve in ContextMint Bridge.
 
 `create` and `modify` additionally read the widget's Cloudflare Turnstile token
 from the loaded confirm step, so a booking-widget tab must be open when you

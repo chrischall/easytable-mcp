@@ -6,7 +6,7 @@
     "email": "chris.c.hall@gmail.com"
   },
   "metadata": {
-    "description": "MCP server for easyTable restaurant reservations — check availability, look up bookings, and create, modify or cancel reservations. Routes through the user's signed-in book.easytable.com tab via the fetchproxy browser extension, reusing the user's existing Cloudflare-cleared session; create/modify read the booking widget's Cloudflare Turnstile token from the tab's DOM.",
+    "description": "MCP server for easyTable restaurant reservations — check availability, look up bookings, and create, modify or cancel reservations. Routes through the user's signed-in book.easytable.com tab via the ContextMint Bridge browser extension, reusing the user's existing Cloudflare-cleared session; create/modify read the booking widget's Cloudflare Turnstile token from the tab's DOM.",
     "version": "1.2.0"
   },
   "plugins": [
