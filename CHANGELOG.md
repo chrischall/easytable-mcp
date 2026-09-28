@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.1](https://github.com/chrischall/easytable-mcp/compare/v1.2.0...v1.2.1) (2026-09-27)
+
+
+### Bug Fixes
+
+* **deps:** move to [@fetchproxy](https://github.com/fetchproxy) 3.4 for ContextMint Bridge errors, capability subsets and managed pins ([#97](https://github.com/chrischall/easytable-mcp/issues/97)) ([7898a0c](https://github.com/chrischall/easytable-mcp/commit/7898a0c170579034f80208eb6abda0ad59c2b2f0))
+* **deps:** move to @chrischall/mcp-utils 2.8 and [@fetchproxy](https://github.com/fetchproxy) 3.4.1 for clearer browser-bridge errors ([#101](https://github.com/chrischall/easytable-mcp/issues/101)) ([4e8822d](https://github.com/chrischall/easytable-mcp/commit/4e8822d7f2fdaa3934704cdc6c583137bda03dba))
+* name the ContextMint Bridge in the healthcheck and HTTP error hint ([#100](https://github.com/chrischall/easytable-mcp/issues/100)) ([09ab631](https://github.com/chrischall/easytable-mcp/commit/09ab6316c8bef92a1175848cbc5711bc06351dd6))
+
 ## [1.2.0](https://github.com/chrischall/easytable-mcp/compare/v1.1.3...v1.2.0) (2026-09-24)
 
 
