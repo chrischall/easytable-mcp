@@ -3,13 +3,13 @@ import {
   IsoDate,
   NonEmptyString,
   PositiveInt,
+  CONFIRM_FLOW_SENTENCE,
   confirmTokenParam,
-  confirmationFromEnv,
+  confirmWrite,
   minifiedResult,
-  requireConfirmationWithFallback,
   toolAnnotations,
 } from '@chrischall/mcp-utils';
-import type { McpServer, ServerContext } from '@modelcontextprotocol/server';
+import type { McpServer } from '@modelcontextprotocol/server';
 import type { EasyTableClient } from '../client.js';
 import { classifyWrite, type WriteOutcome, type WriteResponse } from '../jsonp.js';
 
@@ -46,35 +46,10 @@ function summarize(res: WriteResponse): {
   };
 }
 
-const CONFIRM_FLOW =
-  'Asks the user to confirm first: a confirmation prompt where the client supports one; otherwise the first call makes NO network call and returns a preview and a confirmToken, and only a repeat call with that token proceeds (see MCP_CONFIRM_MODE).';
+// The fleet confirm-flow sentence (mcp-utils confirmWrite), plus the one fact
+// specific to this server: phase 1 never reaches the bridge.
+const CONFIRM_FLOW = `${CONFIRM_FLOW_SENTENCE} The first call makes NO network call.`;
 const TAB_NOTE = 'A signed-in book.easytable.com tab must be open so the Turnstile token can be read.';
-
-/**
- * The confirm gate every booking write passes before it touches the network.
- * `undefined` means proceed; anything else is the result to return unchanged
- * (a prompt, a phase-1 preview + confirmToken, or a refusal). The preview is
- * rebuilt from the call's own arguments every time, and `payload` is exactly
- * what the write submits, so a token only authorises the booking it previewed.
- */
-function confirmWrite(
-  ctx: ServerContext,
-  options: { tool: string; verb: string; message: string; target: string; payload: object; preview: Record<string, unknown>; confirmToken: string | undefined },
-) {
-  // The prompt shows what will happen; the note (how to use the token) is only for the token flow.
-  const { note: _note, ...details } = options.preview;
-  return requireConfirmationWithFallback(
-    ctx,
-    confirmationFromEnv({
-      action: `easytable.${options.verb}`,
-      message: options.message,
-      details,
-      tool: options.tool,
-      confirmToken: options.confirmToken,
-      subject: () => ({ target: options.target, payload: options.payload, preview: options.preview }),
-    }),
-  );
-}
 
 export function registerBookingTools(server: McpServer, client: EasyTableClient): void {
   // --- cancel (tokenless) ---------------------------------------------------
@@ -93,18 +68,18 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
       }),
     },
     async ({ id, mobile, bookingId, confirmToken }, ctx) => {
+      // easyTable has no user login: the restaurant id + guest mobile are the
+      // whole identity, and both are in the bound payload.
       const gate = await confirmWrite(ctx, {
         tool: 'easytable_cancel_booking',
-        verb: 'cancel_booking',
+        action: 'easytable.cancel_booking',
+        summary: 'cancel_booking',
         message: 'Review and confirm cancelling this booking:',
+        account: undefined,
         target: bookingId,
         payload: { id, mobile, bookingId },
         preview: {
-          action: 'cancel_booking',
-          id,
-          bookingId,
-          mobile,
-          note: 'Nothing has been sent — call again with the same arguments and the confirmToken to cancel this booking.',
+          note: 'Nothing has been sent yet. To cancel this booking, confirm in the prompt, or call again with the same arguments and the confirmToken.',
         },
         confirmToken,
       });
@@ -142,14 +117,14 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
     async ({ confirmToken, ...input }, ctx) => {
       const gate = await confirmWrite(ctx, {
         tool: 'easytable_create_booking',
-        verb: 'create_booking',
+        action: 'easytable.create_booking',
+        summary: 'create_booking',
         message: 'Review and confirm this booking:',
+        account: undefined,
         target: input.id,
         payload: input,
         preview: {
-          action: 'create_booking',
-          preview: input,
-          note: `Nothing has been sent — call again with the same arguments and the confirmToken to submit this booking. ${TAB_NOTE}`,
+          note: `Nothing has been sent yet. To submit this booking, confirm in the prompt, or call again with the same arguments and the confirmToken. ${TAB_NOTE}`,
         },
         confirmToken,
       });
@@ -195,17 +170,17 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
       const clears = CLEARABLE.filter((k) => input[k] === '');
       const gate = await confirmWrite(ctx, {
         tool: 'easytable_modify_booking',
-        verb: 'modify_booking',
+        action: 'easytable.modify_booking',
+        summary: 'modify_booking',
         message: 'Review and confirm this change to the booking:',
+        account: undefined,
         target: input.existing,
         payload: input,
         preview: {
-          action: 'modify_booking',
-          preview: input,
           clears,
           note:
             (clears.length > 0 ? `These fields will be cleared on the booking: ${clears.join(', ')}. ` : '') +
-            `Nothing has been sent — call again with the same arguments and the confirmToken to apply this change. ${TAB_NOTE}`,
+            `Nothing has been sent yet. To apply this change, confirm in the prompt, or call again with the same arguments and the confirmToken. ${TAB_NOTE}`,
         },
         confirmToken,
       });
