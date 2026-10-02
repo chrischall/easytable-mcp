@@ -154,19 +154,19 @@ describe('confirm gate — every write tool', () => {
       name: 'easytable_create_booking',
       args: createArgs,
       action: 'create_booking',
-      preview: { action: 'create_booking', preview: createArgs },
+      preview: { action: 'create_booking', willSend: createArgs },
     },
     {
       name: 'easytable_modify_booking',
       args: modifyArgs,
       action: 'modify_booking',
-      preview: { action: 'modify_booking', preview: modifyArgs, clears: ['comment', 'company'] },
+      preview: { action: 'modify_booking', willSend: modifyArgs, clears: ['comment', 'company'] },
     },
     {
       name: 'easytable_cancel_booking',
       args: cancelArgs,
       action: 'cancel_booking',
-      preview: { action: 'cancel_booking', id: '1fdfc', bookingId: 'B1', mobile: '+46701234567' },
+      preview: { action: 'cancel_booking', willSend: cancelArgs },
     },
   ] as const;
 
@@ -190,6 +190,28 @@ describe('confirm gate — every write tool', () => {
       expect(seen.writes).toBe(1);
     });
   }
+
+  it('each write description ends with the fleet confirm-flow sentence (mcp-utils confirmWrite)', async () => {
+    const { CONFIRM_FLOW_SENTENCE } = await import('@chrischall/mcp-utils');
+    const h = await open(bridgeAnswering('').bridge);
+    const { tools } = await h.client.listTools();
+    for (const t of tools) expect(t.description).toContain(CONFIRM_FLOW_SENTENCE);
+  });
+
+  it('the elicitation prompt shows the same preview the token flow returns', async () => {
+    const { bridge } = bridgeAnswering('cb([{"Status":1}])');
+    let shown: unknown;
+    const h = await open(bridge, {
+      elicitation: async (req) => {
+        shown = req;
+        return { action: 'decline' };
+      },
+    });
+    await h.callTool('easytable_cancel_booking', cancelArgs);
+    expect(JSON.stringify(shown)).toContain('willSend');
+    // The prompt carries the same note as the token flow, so it must read true on both rails.
+    expect(JSON.stringify(shown)).toMatch(/confirm in the prompt, or call again/);
+  });
 
   it('no write tool still takes a confirm parameter; each takes confirmToken', async () => {
     const h = await open(bridgeAnswering('').bridge);
