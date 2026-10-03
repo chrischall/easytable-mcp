@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.3](https://github.com/chrischall/easytable-mcp/compare/v1.2.2...v1.2.3) (2026-10-03)
+
+
+### Bug Fixes
+
+* **booking:** bind write confirmations to the exact booking via mcp-utils confirmWrite ([#112](https://github.com/chrischall/easytable-mcp/issues/112)) ([4ab65b8](https://github.com/chrischall/easytable-mcp/commit/4ab65b8c8da709fce51610a3acd80ce5189e3bbc))
+* bump @chrischall/mcp-utils to 2.9.0 ([#106](https://github.com/chrischall/easytable-mcp/issues/106)) ([b637685](https://github.com/chrischall/easytable-mcp/commit/b63768540a15c2fafe38a83b97910980580af7ce))
+* **deps:** bump @chrischall/mcp-utils to 2.12.0 ([#111](https://github.com/chrischall/easytable-mcp/issues/111)) ([4339631](https://github.com/chrischall/easytable-mcp/commit/433963157867c0913d9a3a3c0c3fdbb31be36c18))
+* **deps:** bump @chrischall/mcp-utils to 2.13.0 ([#113](https://github.com/chrischall/easytable-mcp/issues/113)) ([7a68b27](https://github.com/chrischall/easytable-mcp/commit/7a68b2787118a3aa77e3bee51b953d383a422e36))
+* keep credentials and report edge_blocked on CDN/WAF blocks (mcp-utils 2.10.0) ([#109](https://github.com/chrischall/easytable-mcp/issues/109)) ([196fee0](https://github.com/chrischall/easytable-mcp/commit/196fee0d931d641cb3b129059f8f486916e2b151))
+* keep write approvals valid across a hosted restart (mcp-utils 2.11.0) ([#110](https://github.com/chrischall/easytable-mcp/issues/110)) ([5a44e5b](https://github.com/chrischall/easytable-mcp/commit/5a44e5b427afb0fdc2b26a4cf78ca6f35c8d95d8))
+
 ## [1.2.2](https://github.com/chrischall/easytable-mcp/compare/v1.2.1...v1.2.2) (2026-10-01)
 
 
