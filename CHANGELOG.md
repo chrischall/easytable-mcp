@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/chrischall/easytable-mcp/compare/v1.2.3...v1.2.4) (2026-10-05)
+
+
+### Bug Fixes
+
+* **deps:** require @chrischall/mcp-utils 2.14.0 and MCP SDK 2.3.0 ([#114](https://github.com/chrischall/easytable-mcp/issues/114)) ([79adc2c](https://github.com/chrischall/easytable-mcp/commit/79adc2c0d412f6bf64181c5bf57ed7d2a34d64f5))
+
 ## [1.2.3](https://github.com/chrischall/easytable-mcp/compare/v1.2.2...v1.2.3) (2026-10-03)
 
 
