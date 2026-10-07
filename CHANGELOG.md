@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.5](https://github.com/chrischall/easytable-mcp/compare/v1.2.4...v1.2.5) (2026-10-07)
+
+
+### Bug Fixes
+
+* **deps:** retry while the browser bridge awaits approval and honour MCP_CONFIRM_ELICITATION=off ([#116](https://github.com/chrischall/easytable-mcp/issues/116)) ([ab59a53](https://github.com/chrischall/easytable-mcp/commit/ab59a5327a4cd221391afadc05f46dce7ab317bf))
+
+
+### Documentation
+
+* document MCP_CONFIRM_ELICITATION ([#118](https://github.com/chrischall/easytable-mcp/issues/118)) ([0315795](https://github.com/chrischall/easytable-mcp/commit/0315795e46cb6f8d1129caa0474b2a3ee7628eaa))
+
 ## [1.2.4](https://github.com/chrischall/easytable-mcp/compare/v1.2.3...v1.2.4) (2026-10-05)
 
 
