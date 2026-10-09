@@ -37,7 +37,8 @@ booking was made under, then `easytable_modify_booking` /
 ## Writes are confirmed first
 
 `create`, `modify`, and `cancel` ask the user to confirm before anything is
-sent: a confirmation prompt where the client supports one. Otherwise the first
+sent: a confirmation prompt where the client supports one (unless the server
+sets `MCP_CONFIRM_ELICITATION=off`). Otherwise the first
 call sends nothing and returns `status: "confirmation-required"` with a
 preview and a `confirmToken` — show the user the preview, and only after they
 approve it in chat call again with the same arguments plus that `confirmToken`.
