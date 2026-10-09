@@ -57,6 +57,14 @@ describe('parseTimes', () => {
   it('skips cells without a numeric data-time', () => {
     expect(parseTimes('<span class="time"></span>')).toEqual([]);
   });
+
+  it('skips post-midnight / out-of-range slots instead of failing the whole list', () => {
+    const html = `
+      <span class="time" data-time="1410"></span>
+      <span class="time" data-time="1470"></span>
+      <span class="time" data-time="-5"></span>`;
+    expect(parseTimes(html)).toEqual([{ time: '23:30', minuteOfDay: 1410 }]);
+  });
 });
 
 describe('parseCancelSearch', () => {

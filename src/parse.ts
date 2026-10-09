@@ -87,7 +87,10 @@ export function parseTimes(html: string): BookingTime[] {
     const raw = el.getAttribute('data-time');
     if (raw === undefined || raw === null || raw === '') continue;
     const minuteOfDay = Number(raw);
-    if (!Number.isInteger(minuteOfDay)) continue;
+    // A slot past midnight (e.g. 1470 for 00:30 next day) can't be expressed
+    // as a same-day HH:MM nor booked through hhmmToMinuteOfDay, so skip it
+    // rather than let one odd cell fail the whole list.
+    if (!Number.isInteger(minuteOfDay) || minuteOfDay < 0 || minuteOfDay >= 1440) continue;
     const longTime = el.getAttribute('data-longtime') || undefined;
     const preorderAttr = el.getAttribute('data-preorder');
     const preorder = preorderAttr !== undefined && preorderAttr !== null && preorderAttr !== '' && preorderAttr !== '0';
