@@ -16,7 +16,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
     {
       description:
         'List the bookable areas/types for a restaurant (e.g. "Boka Inne", "Boka baren"). Returns each area\'s type id for use in the other availability tools.',
-      annotations: toolAnnotations({ readOnly: true }),
+      annotations: toolAnnotations({ readOnly: true, openWorld: true }),
       inputSchema: z.object({ id: IdSchema, lang: LangSchema }),
     },
     async ({ id, lang }) => minifiedResult(await client.listTypes(id, lang)),
@@ -27,7 +27,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
     {
       description:
         'List bookable dates for a restaurant area and party size. Each entry has an ISO date and whether it is available.',
-      annotations: toolAnnotations({ readOnly: true }),
+      annotations: toolAnnotations({ readOnly: true, openWorld: true }),
       inputSchema: z.object({ id: IdSchema, lang: LangSchema, type: TypeSchema, persons: PositiveInt }),
     },
     async ({ id, lang, type, persons }) =>
@@ -39,7 +39,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
     {
       description:
         'List available time slots for a restaurant area, date, and party size. Times are returned as HH:MM.',
-      annotations: toolAnnotations({ readOnly: true }),
+      annotations: toolAnnotations({ readOnly: true, openWorld: true }),
       inputSchema: z.object({
         id: IdSchema,
         lang: LangSchema,
@@ -57,7 +57,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
     {
       description:
         "Look up a restaurant's existing bookings made with a given mobile number. Returns each booking's id (for easytable_cancel_booking) plus a summary.",
-      annotations: toolAnnotations({ readOnly: true }),
+      annotations: toolAnnotations({ readOnly: true, openWorld: true }),
       inputSchema: z.object({
         id: IdSchema,
         lang: LangSchema,
