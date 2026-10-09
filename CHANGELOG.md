@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.6](https://github.com/chrischall/easytable-mcp/compare/v1.2.5...v1.2.6) (2026-10-09)
+
+
+### Bug Fixes
+
+* annotate tools truthfully and sync manifests with the served tools ([#126](https://github.com/chrischall/easytable-mcp/issues/126)) ([e27bb65](https://github.com/chrischall/easytable-mcp/commit/e27bb650d153b0daf9dcc3baee14a5dabbbddeeb))
+* declare the plugin MCP config under the mcpServers key Claude Code reads ([#127](https://github.com/chrischall/easytable-mcp/issues/127)) ([63556c9](https://github.com/chrischall/easytable-mcp/commit/63556c9c7f1bc652a8d64d6e2255f68c9b39431c))
+* **deps:** Bump @modelcontextprotocol/server ([#121](https://github.com/chrischall/easytable-mcp/issues/121)) ([709547f](https://github.com/chrischall/easytable-mcp/commit/709547fd879e23410ec1432ce2cc2a010eca1d36))
+* **deps:** update @chrischall/mcp-utils to 3.0.0 ([#125](https://github.com/chrischall/easytable-mcp/issues/125)) ([968d1b8](https://github.com/chrischall/easytable-mcp/commit/968d1b80d6d8eb4af26ee1aba78f8d86931ee2a2))
+* resolve low-severity audit findings ([#123](https://github.com/chrischall/easytable-mcp/issues/123)) ([e601c03](https://github.com/chrischall/easytable-mcp/commit/e601c03516d1e3c4bda01130f9cd1edc968a6db0))
+
+
+### Documentation
+
+* **payload:** document bookingToken as required and harvested from confirm.asp ([#124](https://github.com/chrischall/easytable-mcp/issues/124)) ([430b492](https://github.com/chrischall/easytable-mcp/commit/430b492d6234a351dbaca99a7dd9d810ea3fc1c2))
+
 ## [1.2.5](https://github.com/chrischall/easytable-mcp/compare/v1.2.4...v1.2.5) (2026-10-07)
 
 
