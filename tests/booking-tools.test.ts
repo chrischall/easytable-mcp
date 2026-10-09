@@ -9,6 +9,9 @@ import { registerBookingTools } from '../src/tools/booking.js';
 import { EasyTableClient, type Bridge } from '../src/client.js';
 import { createTestHarness, parseToolResult } from './helpers.js';
 
+/** A confirm.asp fragment carrying the two values a booking POST requires. */
+const CONFIRM_ASP = 'bookingToken = "{G}";<input id="cancellationtime" value="180">';
+
 /** A bridge that answers every write with `writeBody` and counts what it was asked to do. */
 function bridgeAnswering(writeBody: string) {
   const seen = { fetches: 0, writes: 0, domReads: 0 };
@@ -19,6 +22,7 @@ function bridgeAnswering(writeBody: string) {
         seen.writes += 1;
         return { status: 200, body: writeBody, url: init.url };
       }
+      if (init.url.includes('confirm.asp')) return { status: 200, body: CONFIRM_ASP, url: init.url };
       return { status: 200, body: '', url: init.url };
     },
     async readDom() {

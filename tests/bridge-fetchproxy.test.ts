@@ -37,7 +37,8 @@ describe('bridge timeout replay (fleet-audit#84)', () => {
     const bridge = {
       async fetch(init: { url: string; method?: string }) {
         if (init.method === 'POST') throw new Error('fetchproxy request timed out after 30000ms');
-        return { status: 200, body: '', url: init.url };
+        const body = init.url.includes('confirm.asp') ? 'bookingToken = "{G}";<input id="cancellationtime" value="180">' : '';
+        return { status: 200, body, url: init.url };
       },
       async readDom() {
         return { turnstileToken: '0.TK' };
