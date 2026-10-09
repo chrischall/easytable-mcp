@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   IsoDate,
+  IsoTime,
   NonEmptyString,
   PositiveInt,
   CONFIRM_FLOW_SENTENCE,
@@ -94,7 +95,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
     id: IdSchema,
     type: NonEmptyString.describe('Booking area/type id from easytable_list_types.'),
     date: IsoDate.describe('Booking date, ISO YYYY-MM-DD (from easytable_list_dates).'),
-    time: NonEmptyString.describe('Time slot HH:MM (from easytable_list_times).'),
+    time: IsoTime.describe('Time slot HH:MM, 24h (from easytable_list_times).'),
     persons: PositiveInt.describe('Party size.'),
     name: NonEmptyString.describe('Guest name on the booking.'),
     mobile: NonEmptyString.describe('Guest mobile in E.164 (e.g. +46701234567).'),

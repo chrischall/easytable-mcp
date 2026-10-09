@@ -103,6 +103,28 @@ describe('write outcomes (fleet-audit#85)', () => {
   });
 });
 
+describe('booking time is validated at the schema (fleet-audit#408)', () => {
+  for (const name of ['easytable_create_booking', 'easytable_modify_booking'] as const) {
+    for (const time of ['7pm', '19.30', '24:00', '19:60']) {
+      it(`${name} rejects time ${JSON.stringify(time)} before any preview`, async () => {
+        const { bridge, seen } = bridgeAnswering('cb([{"Status":1}])');
+        const h = await open(bridge);
+        const args = name === 'easytable_create_booking' ? createArgs : modifyArgs;
+        const res = await h.client.callTool({ name, arguments: { ...args, time } });
+        expect(res.isError).toBe(true);
+        expect(text(res)).not.toContain('confirmation-required');
+        expect(seen.fetches).toBe(0);
+      });
+    }
+  }
+
+  it('accepts a single-digit hour like 9:05', async () => {
+    const h = await open(bridgeAnswering('').bridge);
+    const out = parseToolResult<PhaseOne>(await h.callTool('easytable_create_booking', { ...createArgs, time: '9:05' }));
+    expect(out.status).toBe('confirmation-required');
+  });
+});
+
 describe('modify never silently blanks fields (fleet-audit#86)', () => {
   it('requires email, comment and company so the caller carries them over', async () => {
     const h = await open(bridgeAnswering('cb([{"Status":1}])').bridge);
