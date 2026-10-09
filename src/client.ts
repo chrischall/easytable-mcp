@@ -59,6 +59,9 @@ export const TURNSTILE_SELECTOR_NAME = 'turnstileToken';
 const BOOK_HOST = 'book.easytable.com';
 
 export class EasyTableClient {
+  /** The Turnstile token the last create/modify sent (each is single-use). */
+  private lastSpentToken: string | undefined;
+
   constructor(private readonly bridge: Bridge) {}
 
   // --- availability reads (HTML fragments) -------------------------------
@@ -133,24 +136,41 @@ export class EasyTableClient {
    * booking that's missing any of them, so we harvest them first.
    */
   async createBooking(input: CreateBookingInput): Promise<WriteResponse> {
-    const [config, token] = await Promise.all([
-      this.harvestBookingConfig(input),
-      this.readTurnstileToken(),
-    ]);
-    const payload = buildCreatePayload(mergeConfig(input, config), token);
+    const merged = await this.prepareWrite(input);
+    const token = await this.readTurnstileToken();
+    const payload = buildCreatePayload(merged, token);
     const body = await this.postJson('/user/ajax/json_booking.asp', payload);
     return parseWriteResponse(body);
   }
 
   /** Modify an existing booking. Same harvesting + Turnstile requirement as create. */
   async modifyBooking(input: ModifyBookingInput): Promise<WriteResponse> {
-    const [config, token] = await Promise.all([
-      this.harvestBookingConfig(input),
-      this.readTurnstileToken(),
-    ]);
-    const payload = buildModifyPayload(mergeConfig(input, config), token);
+    const merged = await this.prepareWrite(input);
+    const token = await this.readTurnstileToken();
+    const payload = buildModifyPayload(merged, token);
     const body = await this.postJson('/user/ajax/json_modify_booking.asp', payload);
     return parseWriteResponse(body);
+  }
+
+  /**
+   * Harvest the page-derived values and refuse up front if a required one is
+   * missing. easyTable rejects an empty `bookingToken` (Status 0) and 500s on
+   * an empty `cancellationtime`; posting anyway would spend the tab's
+   * single-use Turnstile token for a guaranteed failure. Runs before the
+   * token is even read.
+   */
+  private async prepareWrite<T extends CreateBookingInput>(input: T): Promise<T> {
+    const merged = mergeConfig(input, await this.harvestBookingConfig(input));
+    const missing = (['bookingToken', 'cancellationtime'] as const).filter((k) => !merged[k]);
+    if (missing.length > 0) {
+      throw new McpToolError(
+        `Could not find ${missing.join(' and ')} in easyTable's confirm.asp step, so the booking was not sent.`,
+        {
+          hint: `Check the type, date, time and party size against easytable_list_times, and reload the https://${BOOK_HOST}/book/?id=<restaurantId> tab. If this keeps happening, easyTable's widget has changed shape and this server needs updating.`,
+        },
+      );
+    }
+    return merged;
   }
 
   /**
@@ -187,6 +207,16 @@ export class EasyTableClient {
       names: [TURNSTILE_SELECTOR_NAME],
     });
     const token = values[TURNSTILE_SELECTOR_NAME];
+    if (token && token === this.lastSpentToken) {
+      // The MCP's POST spent this token, but the page itself didn't submit,
+      // so its hidden input still holds it. Re-sending is a guaranteed reject.
+      throw new McpToolError(
+        'The booking widget tab still holds the Cloudflare Turnstile token the previous booking change used; easyTable accepts each token once.',
+        {
+          hint: `Reload the https://${BOOK_HOST}/book/?id=<restaurantId> tab, let it finish loading so Turnstile issues a fresh token, then retry.`,
+        },
+      );
+    }
     if (!token) {
       throw new McpToolError(
         'Could not read a Cloudflare Turnstile token from the booking widget.',
@@ -195,6 +225,9 @@ export class EasyTableClient {
         },
       );
     }
+    // Treat the token as spent from the moment the POST is attempted: a
+    // timed-out POST may still have reached easyTable.
+    this.lastSpentToken = token;
     return token;
   }
 

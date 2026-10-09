@@ -37,12 +37,17 @@ booking was made under, then `easytable_modify_booking` /
 ## Writes are confirmed first
 
 `create`, `modify`, and `cancel` ask the user to confirm before anything is
-sent: a confirmation prompt where the client supports one. Otherwise the first
-call makes no network call and returns `status: "confirmation-required"` with a
+sent: a confirmation prompt where the client supports one (unless the server
+sets `MCP_CONFIRM_ELICITATION=off`). Otherwise the first
+call sends nothing and returns `status: "confirmation-required"` with a
 preview and a `confirmToken` — show the user the preview, and only after they
 approve it in chat call again with the same arguments plus that `confirmToken`.
 The token is single-use; a changed argument is refused as `DRAFT_CHANGED` with a
 fresh preview (see `MCP_CONFIRM_MODE`).
+
+`cancel` looks the booking up first (a read) and refuses a `bookingId` that
+isn't one of that mobile's bookings; its preview's `booking` shows the matching
+row (date, time, party) so the user can see which reservation they're cancelling.
 
 `create` and `modify` submit a Cloudflare Turnstile token the MCP reads from
 the widget tab's hidden input, so a `book.easytable.com/book/?id=<id>` tab must

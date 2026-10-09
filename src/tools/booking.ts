@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
   IsoDate,
+  IsoTime,
+  McpToolError,
   NonEmptyString,
   PositiveInt,
   CONFIRM_FLOW_SENTENCE,
@@ -49,6 +51,9 @@ function summarize(res: WriteResponse): {
 // The fleet confirm-flow sentence (mcp-utils confirmWrite), plus the one fact
 // specific to this server: phase 1 never reaches the bridge.
 const CONFIRM_FLOW = `${CONFIRM_FLOW_SENTENCE} The first call makes NO network call.`;
+// Cancel is the exception: it looks the booking up (a read) so the preview
+// names the reservation, and refuses an id that isn't one of that mobile's.
+const CANCEL_CONFIRM_FLOW = `${CONFIRM_FLOW_SENTENCE} The first call only looks the booking up (a read); it cancels nothing.`;
 const TAB_NOTE = 'A signed-in book.easytable.com tab must be open so the Turnstile token can be read.';
 
 export function registerBookingTools(server: McpServer, client: EasyTableClient): void {
@@ -58,7 +63,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
     {
       description:
         'Cancel an existing booking. Look up the booking id first with easytable_find_bookings (it needs the mobile the booking was made with). ' +
-        CONFIRM_FLOW,
+        CANCEL_CONFIRM_FLOW,
       annotations: toolAnnotations({ readOnly: false, idempotent: true, openWorld: true, destructive: true }),
       inputSchema: z.object({
         id: IdSchema,
@@ -68,6 +73,17 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
       }),
     },
     async ({ id, mobile, bookingId, confirmToken }, ctx) => {
+      // easyTable's cancel endpoint is authorised by place + mobile + id
+      // alone, so a mixed-up id would cancel some other real reservation.
+      // Look it up first (side-effect free) and show the user which booking
+      // they are approving; re-checked on the confirmed call as well.
+      const found = await client.findBookings(id, 'en', mobile);
+      const booking = found.find((b) => b.bookingId === bookingId);
+      if (!booking) {
+        throw new McpToolError(`No booking ${bookingId} was found for mobile ${mobile} at restaurant ${id}, so nothing was cancelled.`, {
+          hint: `Run easytable_find_bookings with this mobile and pick a bookingId from its results.${found.length > 0 ? ` It currently lists: ${found.map((b) => b.bookingId).join(', ')}.` : ''}`,
+        });
+      }
       // easyTable has no user login: the restaurant id + guest mobile are the
       // whole identity, and both are in the bound payload.
       const gate = await confirmWrite(ctx, {
@@ -79,7 +95,8 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
         target: bookingId,
         payload: { id, mobile, bookingId },
         preview: {
-          note: 'Nothing has been sent yet. To cancel this booking, confirm in the prompt, or call again with the same arguments and the confirmToken.',
+          booking: { bookingId: booking.bookingId, ...(booking.label ? { label: booking.label } : {}) },
+          note: 'Nothing has been cancelled yet. To cancel this booking, confirm in the prompt, or call again with the same arguments and the confirmToken.',
         },
         confirmToken,
       });
@@ -94,7 +111,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
     id: IdSchema,
     type: NonEmptyString.describe('Booking area/type id from easytable_list_types.'),
     date: IsoDate.describe('Booking date, ISO YYYY-MM-DD (from easytable_list_dates).'),
-    time: NonEmptyString.describe('Time slot HH:MM (from easytable_list_times).'),
+    time: IsoTime.describe('Time slot HH:MM, 24h (from easytable_list_times).'),
     persons: PositiveInt.describe('Party size.'),
     name: NonEmptyString.describe('Guest name on the booking.'),
     mobile: NonEmptyString.describe('Guest mobile in E.164 (e.g. +46701234567).'),

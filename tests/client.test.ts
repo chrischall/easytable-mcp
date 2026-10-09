@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { McpToolError } from '@chrischall/mcp-utils';
 import { EasyTableClient, type Bridge, type BridgeResponse } from '../src/client.js';
 
 interface Call {
@@ -140,10 +141,78 @@ describe('EasyTableClient create (Turnstile-gated)', () => {
   });
 
   it('fails fast with guidance when no token is available', async () => {
-    const { bridge, calls } = fakeBridge({ dom: {} });
+    const { bridge, calls } = fakeBridge({
+      dom: {},
+      responses: { 'confirm.asp': { body: 'bookingToken = "{G}";<input id="cancellationtime" value="180">' } },
+    });
     await expect(new EasyTableClient(bridge).createBooking(input)).rejects.toThrow(/Turnstile/i);
     // must not POST without a token
     expect(calls.some((c) => c.method === 'POST')).toBe(false);
+  });
+});
+
+describe('EasyTableClient write preconditions (fleet-audit#410)', () => {
+  const input = {
+    id: '1fdfc', type: '13991', date: '2026-07-10', time: '17:15', persons: 2,
+    name: 'Test Guest', mobile: '+46701234567',
+  };
+  const GOOD_CONFIRM = 'bookingToken = "{G}";<input id="cancellationtime" value="180">';
+
+  it('fails fast, without reading or spending the Turnstile token, when bookingToken is missing', async () => {
+    const { bridge, calls, domCalls } = fakeBridge({
+      dom: { turnstileToken: '0.TK' },
+      responses: { 'confirm.asp': { body: '<input id="cancellationtime" value="180">' } },
+    });
+    const err = await new EasyTableClient(bridge).createBooking(input).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(McpToolError);
+    expect((err as McpToolError).message).toMatch(/bookingToken/);
+    expect(domCalls).toHaveLength(0);
+    expect(calls.some((c) => c.method === 'POST')).toBe(false);
+  });
+
+  it('fails fast when cancellationtime is missing (modify too)', async () => {
+    const { bridge, calls, domCalls } = fakeBridge({
+      dom: { turnstileToken: '0.TK' },
+      responses: { 'confirm.asp': { body: 'bookingToken = "{G}";' } },
+    });
+    const err = await new EasyTableClient(bridge)
+      .modifyBooking({ ...input, existing: 'B1' })
+      .catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(McpToolError);
+    expect((err as McpToolError).message).toMatch(/cancellationtime/);
+    expect(domCalls).toHaveLength(0);
+    expect(calls.some((c) => c.method === 'POST')).toBe(false);
+  });
+
+  it('refuses to re-send a Turnstile token it already spent, and says to reload the tab', async () => {
+    const { bridge, calls } = fakeBridge({
+      dom: { turnstileToken: '0.SAME' },
+      responses: {
+        'confirm.asp': { body: GOOD_CONFIRM },
+        'json_booking.asp': { body: 'cb([{"Status":1}])' },
+      },
+    });
+    const client = new EasyTableClient(bridge);
+    await client.createBooking(input);
+    const err = await client.createBooking(input).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(McpToolError);
+    expect((err as McpToolError).hint).toMatch(/reload/i);
+    expect(calls.filter((c) => c.method === 'POST')).toHaveLength(1);
+  });
+
+  it('accepts a fresh token on the next write', async () => {
+    let n = 0;
+    const { bridge, calls } = fakeBridge({
+      responses: {
+        'confirm.asp': { body: GOOD_CONFIRM },
+        'json_booking.asp': { body: 'cb([{"Status":1}])' },
+      },
+    });
+    bridge.readDom = async () => ({ turnstileToken: `0.T${++n}` });
+    const client = new EasyTableClient(bridge);
+    await client.createBooking(input);
+    await client.createBooking(input);
+    expect(calls.filter((c) => c.method === 'POST')).toHaveLength(2);
   });
 });
 

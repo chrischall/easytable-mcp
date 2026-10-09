@@ -9,15 +9,27 @@ import { registerBookingTools } from '../src/tools/booking.js';
 import { EasyTableClient, type Bridge } from '../src/client.js';
 import { createTestHarness, parseToolResult } from './helpers.js';
 
+/** A confirm.asp fragment carrying the two values a booking POST requires. */
+const CONFIRM_ASP = 'bookingToken = "{G}";<input id="cancellationtime" value="180">';
+
+/** cancel-search fragment listing booking B1 for the test mobile. */
+const CANCEL_SEARCH =
+  '<div class="row" data-mobile="+46701234567"><span>10 Jul 2026 17:15 · 2 guests</span><input type="button" data-booking="B1" value="Cancel" /></div>';
+
 /** A bridge that answers every write with `writeBody` and counts what it was asked to do. */
 function bridgeAnswering(writeBody: string) {
-  const seen = { fetches: 0, writes: 0, domReads: 0 };
+  const seen = { fetches: 0, writes: 0, domReads: 0, lookups: 0 };
   const bridge: Bridge = {
     async fetch(init) {
       seen.fetches += 1;
       if (init.url.includes('/user/ajax/json_')) {
         seen.writes += 1;
         return { status: 200, body: writeBody, url: init.url };
+      }
+      if (init.url.includes('confirm.asp')) return { status: 200, body: CONFIRM_ASP, url: init.url };
+      if (init.url.includes('cancel-search.asp')) {
+        seen.lookups += 1;
+        return { status: 200, body: CANCEL_SEARCH, url: init.url };
       }
       return { status: 200, body: '', url: init.url };
     },
@@ -103,6 +115,28 @@ describe('write outcomes (fleet-audit#85)', () => {
   });
 });
 
+describe('booking time is validated at the schema (fleet-audit#408)', () => {
+  for (const name of ['easytable_create_booking', 'easytable_modify_booking'] as const) {
+    for (const time of ['7pm', '19.30', '24:00', '19:60']) {
+      it(`${name} rejects time ${JSON.stringify(time)} before any preview`, async () => {
+        const { bridge, seen } = bridgeAnswering('cb([{"Status":1}])');
+        const h = await open(bridge);
+        const args = name === 'easytable_create_booking' ? createArgs : modifyArgs;
+        const res = await h.client.callTool({ name, arguments: { ...args, time } });
+        expect(res.isError).toBe(true);
+        expect(text(res)).not.toContain('confirmation-required');
+        expect(seen.fetches).toBe(0);
+      });
+    }
+  }
+
+  it('accepts a single-digit hour like 9:05', async () => {
+    const h = await open(bridgeAnswering('').bridge);
+    const out = parseToolResult<PhaseOne>(await h.callTool('easytable_create_booking', { ...createArgs, time: '9:05' }));
+    expect(out.status).toBe('confirmation-required');
+  });
+});
+
 describe('modify never silently blanks fields (fleet-audit#86)', () => {
   it('requires email, comment and company so the caller carries them over', async () => {
     const h = await open(bridgeAnswering('cb([{"Status":1}])').bridge);
@@ -148,6 +182,34 @@ describe('modify never silently blanks fields (fleet-audit#86)', () => {
   });
 });
 
+describe('cancel previews the booking it will cancel (fleet-audit#412)', () => {
+  it('shows the matching booking row in the preview', async () => {
+    const { bridge, seen } = bridgeAnswering('cb([{"Status":1}])');
+    const h = await open(bridge);
+    const out = parseToolResult<PhaseOne>(await h.callTool('easytable_cancel_booking', cancelArgs));
+    expect(out.status).toBe('confirmation-required');
+    expect(out.preview.booking).toMatchObject({ bookingId: 'B1', label: expect.stringContaining('2 guests') });
+    expect(seen.writes).toBe(0);
+  });
+
+  it('refuses, with no confirmation offered, when the id is not a booking for that mobile', async () => {
+    const { bridge, seen } = bridgeAnswering('cb([{"Status":1}])');
+    const h = await open(bridge);
+    const res = await h.client.callTool({ name: 'easytable_cancel_booking', arguments: { ...cancelArgs, bookingId: 'OTHER' } });
+    expect(res.isError).toBe(true);
+    expect(text(res)).toMatch(/easytable_find_bookings/);
+    expect(text(res)).not.toContain('confirmation-required');
+    expect(seen.writes).toBe(0);
+  });
+
+  it('re-checks on the confirmed call too, so an already-gone booking is not cancelled blind', async () => {
+    const { bridge, seen } = bridgeAnswering('cb([{"Status":1}])');
+    await confirmedCall(bridge, 'easytable_cancel_booking', cancelArgs);
+    expect(seen.lookups).toBe(2);
+    expect(seen.writes).toBe(1);
+  });
+});
+
 describe('confirm gate — every write tool', () => {
   const cases = [
     {
@@ -180,7 +242,10 @@ describe('confirm gate — every write tool', () => {
       expect(out.confirmToken).toEqual(expect.any(String));
       expect(out.preview).toMatchObject(c.preview);
       expect(String(out.preview.note)).toMatch(/confirmToken/);
-      expect(seen).toEqual({ fetches: 0, writes: 0, domReads: 0 });
+      // cancel looks the booking up (a side-effect-free read) so the preview
+      // can show which reservation it is; nothing else touches the bridge.
+      const lookups = c.name === 'easytable_cancel_booking' ? 1 : 0;
+      expect(seen).toEqual({ fetches: lookups, writes: 0, domReads: 0, lookups });
     });
 
     it(`${c.name}: phase 2 with the token writes exactly once`, async () => {
@@ -256,7 +321,9 @@ describe('confirm gate — token and mode rules', () => {
     const crossed = await h.callTool('easytable_cancel_booking', { ...cancelArgs, confirmToken });
     expect(crossed.isError).toBe(true);
     expect(text(crossed)).toContain('TOKEN_INVALID');
-    expect(seen.fetches).toBe(0);
+    // only cancel's booking lookup (a read) ran; nothing was written
+    expect(seen.fetches).toBe(seen.lookups);
+    expect(seen.writes).toBe(0);
   });
 
   it('a client that accepts the elicitation prompt gets the write', async () => {

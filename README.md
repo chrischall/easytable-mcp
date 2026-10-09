@@ -29,9 +29,11 @@ identified by its `id`).
 ## Confirmations
 
 Every write asks you to confirm it first. A client that can show a
-confirmation prompt (Claude Code) shows one. Elsewhere the first call makes no
-network call and returns a preview plus a `confirmToken`; only a repeat call
-with the same arguments and that token books, changes or cancels. The token is
+confirmation prompt (Claude Code) shows one. Elsewhere the first call sends
+nothing and returns a preview plus a `confirmToken`; only a repeat call
+with the same arguments and that token books, changes or cancels. A cancel looks
+the booking up first, so its preview shows which reservation it is, and an id
+that isn't one of that mobile's bookings is refused. The token is
 single-use, and a changed argument invalidates it.
 
 | variable | default | |
