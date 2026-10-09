@@ -11,11 +11,12 @@
  * Three values are page-derived, not caller-supplied:
  *   - `turnstileToken` — read from the widget's hidden input via the bridge.
  *   - `lcid` — the numeric locale id; parseable from the widget page HTML.
- *   - `bookingToken` — a per-session anti-bot token botguard.js sets as a JS
- *     global (`window.bookingToken`). NOT in the DOM/HTML, so `read_dom`
- *     can't harvest it; whether the server *requires* it on create is still
- *     unconfirmed (see docs). Supplied here as an optional field so a caller
- *     that can obtain it may pass it; defaults to `''`.
+ *   - `bookingToken` — a per-flow GUID (`{…}`, 38 chars) the server issues in
+ *     the `confirm.asp` fragment (`bookingToken = "{…}"` inline script).
+ *     REQUIRED: an empty token gets HTTP 200 `Status:0` and no booking (see
+ *     docs/EASYTABLE-API.md). The client's `harvestBookingConfig` parses it
+ *     from a fetched `confirm.asp` and refuses to post without it; it is
+ *     optional on the input only so a caller-supplied value can win.
  * `websitePot` is a honeypot the widget leaves empty. `botScore` is BotGuard's
  * score, which never loads on the fetched page, so it defaults to 0.
  */
@@ -48,9 +49,15 @@ export interface CreateBookingInput {
   event?: string;
   /** Numeric locale id (`lcid`), harvested from the widget page. Default `''`. */
   lcid?: string;
-  /** Cancellation window in minutes, per the restaurant's config. Default `''`. */
+  /**
+   * Cancellation window in minutes. REQUIRED (empty → the endpoint 500s);
+   * harvested from the `confirm.asp` fragment by the client when omitted.
+   */
   cancellationtime?: string;
-  /** Per-session anti-bot token (`window.bookingToken`). Default `''`. */
+  /**
+   * Per-flow booking GUID. REQUIRED by the server; harvested from the
+   * `confirm.asp` fragment by the client when omitted (a caller value wins).
+   */
   bookingToken?: string;
   /** Newsletter opt-in flag (0/1). Default 0. */
   newsletter?: number;
