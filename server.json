@@ -23,6 +23,12 @@
           "format": "string"
         },
         {
+          "name": "EASYTABLE_DEBUG",
+          "description": "Set to 1 to log the bridge role and per-request debug lines to stderr.",
+          "isRequired": false,
+          "format": "string"
+        },
+        {
           "name": "FETCHPROXY_WS_HOST",
           "description": "Bridge bind interface, a literal IP only (default 127.0.0.1). Keep on loopback; exists for a hosted child in its own network namespace.",
           "isRequired": false,

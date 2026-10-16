@@ -15,10 +15,16 @@ const serverJson = JSON.parse(readFileSync(join(ROOT, 'server.json'), 'utf8')) a
   packages: { environmentVariables?: { name: string; isRequired?: boolean }[] }[];
 };
 
-// The env keys the built server honours: EASYTABLE_WS_PORT (ours) plus the two
+// The env keys the built server honours: EASYTABLE_WS_PORT and EASYTABLE_DEBUG
+// (ours) plus the two
 // fetchproxy hosting knobs. FETCHPROXY_WS_PORT is inert (we always pass a port)
 // and ws's WS_NO_* are defined away in the bundle script.
-const HONOURED_ENV = ['EASYTABLE_WS_PORT', 'FETCHPROXY_IDENTITY_DIR', 'FETCHPROXY_WS_HOST'];
+const HONOURED_ENV = [
+  'EASYTABLE_DEBUG',
+  'EASYTABLE_WS_PORT',
+  'FETCHPROXY_IDENTITY_DIR',
+  'FETCHPROXY_WS_HOST',
+];
 
 describe('manifest.json', () => {
   it('lists exactly the served tools', () => {

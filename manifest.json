@@ -33,6 +33,7 @@
       ],
       "env": {
         "EASYTABLE_WS_PORT": "${user_config.ws_port}",
+        "EASYTABLE_DEBUG": "${user_config.debug}",
         "FETCHPROXY_WS_HOST": "${user_config.fetchproxy_ws_host}",
         "FETCHPROXY_IDENTITY_DIR": "${user_config.fetchproxy_identity_dir}"
       }
@@ -43,6 +44,12 @@
       "type": "string",
       "title": "Bridge WebSocket port",
       "description": "Optional. Override the fetchproxy WebSocket port (default 37149). Leave blank to use it.",
+      "required": false
+    },
+    "debug": {
+      "type": "string",
+      "title": "Debug logging",
+      "description": "Optional. Set to 1 to log the bridge role and per-request debug lines to stderr. Leave blank.",
       "required": false
     },
     "fetchproxy_ws_host": {
