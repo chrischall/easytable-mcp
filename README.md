@@ -66,6 +66,19 @@ single-use, and a changed argument invalidates it.
 from the loaded confirm step, so a booking-widget tab must be open when you
 confirm one.
 
+### Environment
+
+No environment variables are required. These optional knobs mirror the `.mcpb`
+manifest's settings (the `MCP_CONFIRM_*` family is under
+[Confirmations](#confirmations)):
+
+| variable | default | |
+|---|---|---|
+| `EASYTABLE_WS_PORT` | `37149` | Concentrator port for the fetchproxy browser bridge. Every fetchproxy MCP on one machine shares it, so move it for all of them or none (local testing, or a hosted registration's bridge port). |
+| `FETCHPROXY_WS_HOST` | `127.0.0.1` | Bridge bind interface, a literal IP only (anything else is ignored). Keep on loopback; it exists for a hosted child in its own network namespace. |
+| `FETCHPROXY_IDENTITY_DIR` | `~/.fetchproxy/identity/` | Where the bridge's long-term identity keypair is stored, an absolute path only (anything else is ignored). For a host that runs a separate child per caller. |
+| `EASYTABLE_DEBUG` | unset | Set to a truthy value to log the bridge role and per-request debug lines to stderr. |
+
 ## Development
 
 ```sh
