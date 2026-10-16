@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.7](https://github.com/chrischall/easytable-mcp/compare/v1.2.6...v1.2.7) (2026-10-16)
+
+
+### Bug Fixes
+
+* **deps:** bump @chrischall/mcp-utils to 3.0.3 and @fetchproxy/server to 3.6.2 ([#132](https://github.com/chrischall/easytable-mcp/issues/132)) ([3744161](https://github.com/chrischall/easytable-mcp/commit/37441614622c77bb9c481fe757eea8b0f64d1f23))
+* **deps:** Bump the production-dependencies group with 3 updates ([#130](https://github.com/chrischall/easytable-mcp/issues/130)) ([f187917](https://github.com/chrischall/easytable-mcp/commit/f187917c798bc96ebf606857ff2d582cc22a24bc))
+* **manifest:** declare EASYTABLE_DEBUG in the .mcpb manifest and server.json ([#135](https://github.com/chrischall/easytable-mcp/issues/135)) ([b39307a](https://github.com/chrischall/easytable-mcp/commit/b39307aae257dee3327b292c1b2468cec6f450dc))
+* **plugin:** launch the published package so marketplace installs start ([#134](https://github.com/chrischall/easytable-mcp/issues/134)) ([3208910](https://github.com/chrischall/easytable-mcp/commit/32089106b7ffe5c37d60f1206bea6701bdc41392))
+
 ## [1.2.6](https://github.com/chrischall/easytable-mcp/compare/v1.2.5...v1.2.6) (2026-10-09)
 
 
