@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.8](https://github.com/chrischall/easytable-mcp/compare/v1.2.7...v1.2.8) (2026-10-17)
+
+
+### Documentation
+
+* **claude:** list EASYTABLE_DEBUG among the honoured environment keys ([#138](https://github.com/chrischall/easytable-mcp/issues/138)) ([e65ac46](https://github.com/chrischall/easytable-mcp/commit/e65ac46ee23ef146729a63330fb62eb75c397d6a))
+
 ## [1.2.7](https://github.com/chrischall/easytable-mcp/compare/v1.2.6...v1.2.7) (2026-10-16)
 
 
