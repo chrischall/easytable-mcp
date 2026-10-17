@@ -78,7 +78,7 @@ Env: the `bundle` script `--define`s three env reads that are inert in the
 bundle, so the fleet env lint (which scans `dist/`) sees only keys the server
 honours — `FETCHPROXY_WS_PORT` (we always pass `port`; `EASYTABLE_WS_PORT` is the
 knob) and ws's `WS_NO_BUFFER_UTIL` / `WS_NO_UTF_8_VALIDATE` (the .mcpb ships no
-`node_modules`). The honoured keys — `EASYTABLE_WS_PORT`, `FETCHPROXY_WS_HOST`,
-`FETCHPROXY_IDENTITY_DIR` — are declared (all optional) in manifest.json and
+`node_modules`). The honoured keys — `EASYTABLE_WS_PORT`, `EASYTABLE_DEBUG`,
+`FETCHPROXY_WS_HOST`, `FETCHPROXY_IDENTITY_DIR` — are declared (all optional) in manifest.json and
 server.json, pinned by `tests/manifest.test.ts`. Tool annotations are pinned on
 the wire by `tests/tool-annotations.test.ts`.
