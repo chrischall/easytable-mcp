@@ -8,6 +8,17 @@ summary: >-
   bridge, so a registration also needs runtime fly-shared, bridge: true and
   a bridgePortEnv — registration fields this manifest has no schema for.
   state.dataDir below is required for bridge and is why it is declared.
+examples:
+  - prompt: >-
+      Which seating areas can I book at the restaurant in my open
+      book.easytable.com booking tab?
+    note: Lists the bookable areas for the id in the widget link.
+  - prompt: >-
+      Which dates in the next two weeks have an indoor table for 4 at this
+      easyTable restaurant?
+    note: Read-only; checks bookable dates for one area and party size.
+  - prompt: What times are free for 2 people this Saturday evening?
+    note: Read-only; lists open time slots. Booking still asks you to confirm.
 env:
   - name: EASYTABLE_WS_PORT
     required: false
