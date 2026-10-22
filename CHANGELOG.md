@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.9](https://github.com/chrischall/easytable-mcp/compare/v1.2.8...v1.2.9) (2026-10-22)
+
+
+### Documentation
+
+* **mint:** add sample prompts for the public catalog ([#141](https://github.com/chrischall/easytable-mcp/issues/141)) ([16d0189](https://github.com/chrischall/easytable-mcp/commit/16d01894ab753291a30d445fb55aee5d79d272e7))
+* **mint:** fit the catalog summary within 200 characters ([#143](https://github.com/chrischall/easytable-mcp/issues/143)) ([8d33a17](https://github.com/chrischall/easytable-mcp/commit/8d33a17456e43ef95f79461ae90bcdbed1549af0))
+
 ## [1.2.8](https://github.com/chrischall/easytable-mcp/compare/v1.2.7...v1.2.8) (2026-10-17)
 
 
