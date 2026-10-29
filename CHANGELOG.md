@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.9](https://github.com/chrischall/easytable-mcp/compare/v1.2.8...v1.2.9) (2026-10-29)
+
+
+### Bug Fixes
+
+* **deps:** Bump the production-dependencies group with 2 updates ([#145](https://github.com/chrischall/easytable-mcp/issues/145)) ([3369af6](https://github.com/chrischall/easytable-mcp/commit/3369af6f2361419512d6039553880c21e1ac73a9))
+* **deps:** require @chrischall/mcp-utils 3.4.0 ([#146](https://github.com/chrischall/easytable-mcp/issues/146)) ([f5d3bfb](https://github.com/chrischall/easytable-mcp/commit/f5d3bfb937ac0733cd893f4d9dfbdb6d694d5f19))
+* **deps:** require the MCP SDK ^2.4.0 that mcp-utils 3.4.0 peer-requires ([#147](https://github.com/chrischall/easytable-mcp/issues/147)) ([282dded](https://github.com/chrischall/easytable-mcp/commit/282dded8d0e493b7ac6a404885becae7eacedf87))
+
+
+### Documentation
+
+* **mint:** add sample prompts for the public catalog ([#141](https://github.com/chrischall/easytable-mcp/issues/141)) ([16d0189](https://github.com/chrischall/easytable-mcp/commit/16d01894ab753291a30d445fb55aee5d79d272e7))
+* **mint:** fit the catalog summary within 200 characters ([#143](https://github.com/chrischall/easytable-mcp/issues/143)) ([8d33a17](https://github.com/chrischall/easytable-mcp/commit/8d33a17456e43ef95f79461ae90bcdbed1549af0))
+
 ## [1.2.8](https://github.com/chrischall/easytable-mcp/compare/v1.2.7...v1.2.8) (2026-10-17)
 
 
