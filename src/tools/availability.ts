@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { IsoDate, NonEmptyString, PositiveInt, minifiedResult, toolAnnotations } from '@chrischall/mcp-utils';
 import type { McpServer } from '@modelcontextprotocol/server';
 import type { EasyTableClient } from '../client.js';
+import { AVAILABILITY_META, FIND_BOOKINGS_META } from './hints.js';
 
 const IdSchema = NonEmptyString.describe('Restaurant id — the `id` in a book.easytable.com/book/?id=<id> link.');
 const LangSchema = z
@@ -16,6 +17,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
     {
       description:
         'List the bookable areas/types for a restaurant (e.g. "Boka Inne", "Boka baren"). Returns each area\'s type id for use in the other availability tools.',
+      _meta: AVAILABILITY_META,
       annotations: toolAnnotations({ readOnly: true, openWorld: true }),
       inputSchema: z.object({ id: IdSchema, lang: LangSchema }),
     },
@@ -27,6 +29,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
     {
       description:
         'List bookable dates for a restaurant area and party size. Each entry has an ISO date and whether it is available.',
+      _meta: AVAILABILITY_META,
       annotations: toolAnnotations({ readOnly: true, openWorld: true }),
       inputSchema: z.object({ id: IdSchema, lang: LangSchema, type: TypeSchema, persons: PositiveInt }),
     },
@@ -39,6 +42,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
     {
       description:
         'List available time slots for a restaurant area, date, and party size. Times are returned as HH:MM.',
+      _meta: AVAILABILITY_META,
       annotations: toolAnnotations({ readOnly: true, openWorld: true }),
       inputSchema: z.object({
         id: IdSchema,
@@ -57,6 +61,7 @@ export function registerAvailabilityTools(server: McpServer, client: EasyTableCl
     {
       description:
         "Look up a restaurant's existing bookings made with a given mobile number. Returns each booking's id (for easytable_cancel_booking) plus a summary.",
+      _meta: FIND_BOOKINGS_META,
       annotations: toolAnnotations({ readOnly: true, openWorld: true }),
       inputSchema: z.object({
         id: IdSchema,
