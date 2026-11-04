@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/chrischall/easytable-mcp/compare/v1.2.9...v1.3.0) (2026-11-04)
+
+
+### Features
+
+* context-group hints ([#150](https://github.com/chrischall/easytable-mcp/issues/150)) ([a7aef9d](https://github.com/chrischall/easytable-mcp/commit/a7aef9dbc12db6ff31b858af550fc0a8556b7c8c))
+
+
+### Bug Fixes
+
+* **deps:** Bump @fetchproxy/server ([#148](https://github.com/chrischall/easytable-mcp/issues/148)) ([c7fdcd5](https://github.com/chrischall/easytable-mcp/commit/c7fdcd5e328d627ad28c16b35f5dc37067323ce4))
+
 ## [1.2.9](https://github.com/chrischall/easytable-mcp/compare/v1.2.8...v1.2.9) (2026-10-29)
 
 
