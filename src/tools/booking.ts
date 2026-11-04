@@ -13,6 +13,7 @@ import {
 } from '@chrischall/mcp-utils';
 import type { McpServer } from '@modelcontextprotocol/server';
 import type { EasyTableClient } from '../client.js';
+import { CANCEL_BOOKING_META, CREATE_BOOKING_META, MODIFY_BOOKING_META } from './hints.js';
 import { classifyWrite, type WriteOutcome, type WriteResponse } from '../jsonp.js';
 
 const IdSchema = NonEmptyString.describe('Restaurant id — the `id` in a book.easytable.com/book/?id=<id> link.');
@@ -64,6 +65,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
       description:
         'Cancel an existing booking. Look up the booking id first with easytable_find_bookings (it needs the mobile the booking was made with). ' +
         CANCEL_CONFIRM_FLOW,
+      _meta: CANCEL_BOOKING_META,
       annotations: toolAnnotations({ readOnly: false, idempotent: true, openWorld: true, destructive: true }),
       inputSchema: z.object({
         id: IdSchema,
@@ -128,6 +130,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
       description:
         'Create a restaurant booking. Reads the Cloudflare Turnstile token from your signed-in booking-widget tab (via the bridge) and submits it with the reservation — so a book.easytable.com/book/?id=<id> tab must be open and loaded. ' +
         CONFIRM_FLOW,
+      _meta: CREATE_BOOKING_META,
       annotations: toolAnnotations({ readOnly: false, idempotent: false, openWorld: true, destructive: true }),
       inputSchema: z.object({ ...createFields, confirmToken: confirmTokenParam }),
     },
@@ -175,6 +178,7 @@ export function registerBookingTools(server: McpServer, client: EasyTableClient)
         'Modify an existing booking (date/time/party size/details). Like create, it reads the Turnstile token from your signed-in widget tab. Get the existing booking id from easytable_find_bookings. ' +
         'The change replaces the whole booking: email, comment and company are required — pass the booking\'s current values to keep them (ask the user if unknown), or \'\' to clear them; the newsletter opt-in is reset. ' +
         CONFIRM_FLOW,
+      _meta: MODIFY_BOOKING_META,
       annotations: toolAnnotations({ readOnly: false, idempotent: false, openWorld: true, destructive: true }),
       inputSchema: z.object({
         ...createFields,

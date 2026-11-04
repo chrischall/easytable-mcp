@@ -64,6 +64,22 @@ email, comment (special requests, allergy notes) and company and pass them
 through unchanged, or pass `''` to clear one on purpose; the preview lists what
 will be cleared.
 
+## In context groups
+
+easyTable is a member of the **food** group. It has no canonical read: there is
+no account to list subjects from, and every read needs a restaurant id (plus
+the guest mobile for bookings), so it never answers a "what's new / due / on"
+ask by itself. Its tools carry `lookup` hints (areas, dates, times, find
+bookings) and `change` hints (create, modify, cancel), with the words people
+say ("book a table", "cancel my reservation").
+
+A compound ask such as "anything on tonight — and is there a table for four at
+<restaurant> on Friday?" is answered by the group's other members for the
+first half; the second half routes here as a lookup with the restaurant id.
+Because every call rides the browser bridge, when no signed-in
+book.easytable.com tab is connected the group answers that easyTable "needs
+your browser open" rather than guessing.
+
 ## Notes
 
 - Times are HH:MM; the widget internally uses minute-of-day.
