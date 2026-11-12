@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/chrischall/easytable-mcp/compare/v1.3.0...v1.3.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* **deps:** Bump node-html-parser ([#153](https://github.com/chrischall/easytable-mcp/issues/153)) ([074c371](https://github.com/chrischall/easytable-mcp/commit/074c3715c874fd1ef90413123bc4851880d04818))
+* **deps:** Bump the production-dependencies group with 3 updates ([#155](https://github.com/chrischall/easytable-mcp/issues/155)) ([e935346](https://github.com/chrischall/easytable-mcp/commit/e935346c6a81d2b80d03cad5a76b11de38a6a773))
+
 ## [1.3.0](https://github.com/chrischall/easytable-mcp/compare/v1.2.9...v1.3.0) (2026-11-04)
 
 
